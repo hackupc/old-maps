@@ -26,7 +26,7 @@ THREE.OrbitControls = function ( object, domElement ) {
   this.userRotateSpeed = 1.0;
 
   this.userPan = true;
-  this.userPanSpeed = 2.0;
+  this.userPanSpeed = 0.01;
   this.panXZOnly = false;
 
   this.autoRotate = false;
@@ -159,8 +159,7 @@ THREE.OrbitControls = function ( object, domElement ) {
     var sameObj = this.object.position.y,
     sameCen = this.center.y;
     distance.transformDirection( this.object.matrix );
-    distance.multiplyScalar( scope.userPanSpeed + this.center.distanceTo(this.object.position)/100 );
-
+    distance.multiplyScalar( scope.userPanSpeed * this.center.distanceTo(this.object.position) );
     this.object.position.add( distance );
     this.center.add( distance );
 
