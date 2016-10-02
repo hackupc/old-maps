@@ -1,8 +1,9 @@
 <html>
 <head>
-	<script src="three.min.js"></script>
-	<script src="OrbitControls.js"></script>
-	<script src="app.js"></script>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+	<script src="js/three.min.js"></script>
+	<script src="js/OrbitControls.js"></script>
+	<script src="js/app.js"></script>
 	<style>
 		*{
 			transition: opacity 200ms;
@@ -13,44 +14,146 @@
 			margin:0;
 			padding:0;
 			touch-action: none;
+			font-family: sans-serif;
 		}
-		main{
+		canvas{
+			z-index:1;
+		}
+
+
+		#map-ui{
+			width:100%;
 			position:absolute;
 			top:0;
 			left:0;
+			z-index:2;
 		}
 
-		section.panel{
+		#map-ui article{
 			display:none;
 		}
 
-		section.panel.active{
+		#map-ui article.active{
 			display:flex;
 		}
 
-		#floors{
+		#map-floors .panel{
+			position: fixed;
+			top: 35%;
+		}
 
+		#map-floors .map-buttonList{
+			list-style: none;
+			margin: 0;
+			padding: 0;
+			padding-left: 15px;
+		}
+
+		#map-floors .map-buttonList li{
+			padding: 5px 8px;
+			margin: 5px;
+			border: thin solid #ddd;
+			background-color: #eee;
+			color: #bbb;
+			cursor:pointer;
+		}
+
+		#map-floors .map-buttonList li.active{
+			color:black;
+		}
+
+		#map-routeHeader{
+			text-align: center;
 		}
 
 		.hidden{
 			opacity:0;
 			transition: opacity 200ms;
 		}
+
+		.notdisplayed{
+			display: none !important;
+		}
+
+		#map-helpbtn, #map-out{
+			position: fixed;
+			top: 0;
+			width: 40px;
+			margin: 20px;
+			vertical-align: middle;
+			text-align: center;
+			padding: 5px;
+			font-size: 30px;
+			font-weight: bold;
+			background-color: #f0f0f0;
+			color: gray;
+			border-radius: 25px;
+			cursor: pointer;
+			z-index: 2;
+		}
+
+		#map-helpbtn{
+			right:0;
+		}
+
+
+		.map-help{
+			    position: absolute;
+				width: 100%;
+				align-items: center;
+				justify-content: center;
+				height: 100%;
+				display: flex;
+				background-color: rgba(215, 202, 190, 0.5);
+				z-index:3;
+
+		}
+		.map-help div{
+		    padding: 20px;
+			background-color: antiquewhite;
+			border-radius: 20px;
+		}
+
+		.map-help div ul{
+			list-style: none;
+			padding: 0;
+		}
 	</style>
 </head>
 <body>
-	<main class="ui">
+	<div id="map-help-touch" class="map-help notdisplayed hidden">
+		<div>
+			<ul>
+				<li>Drag: Rotate</li>
+				<li>Pinch: Zoom</li>
+				<li>Drag 3 fingers: Pan</li>
+			</ul>
+		</div>
+	</div>
+	<div id="map-help-click" class="map-help notdisplayed hidden">
+		<div>
+			<ul>
+				<li>Drag click: Rotate</li>
+				<li>Mousewheel: Zoom</li>
+				<li>Right click: Pan</li>
+			</ul>
+		</div>
+	</div>
+	<main id="map-ui">
 		<header>
-			<h1>HackUPC map</h1>
+			<div id="map-out">&lt;</div>
+			<h1 id="map-routeHeader"></h1>
+			<div id="map-helpbtn">?</div>
 		</header>
-		<article>
-			<section class="panel" id="floors">
-				<ul class="buttonList">
-					<li>0</li>
-					<li>E</li>
-					<li>1</li>
-					<li>2</li>
-					<li>*</li>
+		<!--Articles represent views. Only one view active at a time-->
+		<article id="map-floors">
+			<section class="panel">
+				<ul class="map-buttonList">
+					<li data-change-floor="0" data-link-hash="\w*(\/0)\b">0</li>
+					<li data-change-floor="1" data-link-hash="\w*(\/1)\b">E</li>
+					<li data-change-floor="2" data-link-hash="\w*(\/2)\b">1</li>
+					<li data-change-floor="3" data-link-hash="\w*(\/3)\b">2</li>
+					<li data-change-floor="*" data-link-hash="\w*!(\/)\b">*</li>
 				</ul>
 			</section>
 		</article>

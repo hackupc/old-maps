@@ -8,18 +8,25 @@ document.addEventListener("DOMContentLoaded", function(){
     var currentRoute;
 
     var clickEvents= {};
+    var helpOpen = false;
+
+    var ASSETS_URL = "assets/";
+    var HASH_PREFIX = "/map/";
+    var DEFAULT_ROUTE = "main";
+    var HIDE_TIME = 200;
 
     var routes = {
         main:
         {
             path: "main.json",
             name: "main",
+            root: true,
             scene: null
         },
         A5:
         {
             name: "A5",
-            panel: "floors",
+            panel: "map-floors",
             children:
             {
                 "0":
@@ -55,29 +62,29 @@ document.addEventListener("DOMContentLoaded", function(){
         A6:
         {
             name: "A6",
-            panel: "floors",
+            panel: "map-floors",
             children:
             [
                 {
-                    name:"A60",
+                    name:"0",
                     path: "A60.json",
                     offset: 0,
                     scene:null
                 },
                 {
-                    name:"A6E",
+                    name:"E",
                     path: "A6E.json",
                     offset: 1,
                     scene:null
                 },
                 {
-                    name:"A61",
+                    name:"1",
                     path: "A61.json",
                     offset: 2,
                     scene:null
                 },
                 {
-                    name:"A62",
+                    name:"2",
                     path: "A62.json",
                     offset: 3,
                     scene:null
@@ -91,11 +98,6 @@ document.addEventListener("DOMContentLoaded", function(){
             scene: null
         }
     };
-
-    var HASH_PREFIX = "/map/";
-    var DEFAULT_ROUTE = "main";
-    var HIDE_TIME = 200;
-
 
 
 
@@ -134,9 +136,23 @@ document.addEventListener("DOMContentLoaded", function(){
     }
 
     function initEvents(){
-        document.addEventListener("mousemove",onMouseMove);
-        document.addEventListener("click",onMouseClick);
+        document.querySelector("canvas").addEventListener("mousemove",onMouseMove);
+        document.querySelector("canvas").addEventListener("click",onMouseClick);
         window.addEventListener("hashchange",onHashChange);
+        document.getElementById("map-helpbtn").addEventListener("click", function(){
+            toggleHelp("click");
+        });
+        document.getElementById("map-helpbtn").addEventListener("touchend", function(){
+            toggleHelp("touch");
+        });
+        document.getElementById("map-help-click").addEventListener("click", toggleHelp);
+        document.getElementById("map-help-touch").addEventListener("touchend", toggleHelp);
+        document.getElementById("map-out").addEventListener("click", function(){
+            goTo(routes.main.name);
+        });
+        document.getElementById("map-out").addEventListener("touchend", function(){
+            goTo(routes.main.name);
+        });
 
         clickEvents["A5"] = function(){
             goTo(routes.A5.name);
@@ -145,6 +161,52 @@ document.addEventListener("DOMContentLoaded", function(){
         clickEvents["A6"] = function(){
             goTo(routes.A6.name);
         };
+
+        var elems = document.querySelectorAll("[data-change-floor]");
+        for(var i = 0; i < elems.length; i++)
+        {
+            (function(elem){
+                elem.addEventListener("click", function(){
+                    changeFloor(elem.dataset.changeFloor);
+                });
+            })(elems[i]);
+        }
+
+    }
+
+    function toggleHelp(mode){
+        if(mode == "click")
+            displayElement("map-help-click");
+        else if(mode == "touch")
+            displayElement("map-help-touch");
+        else
+        {
+            undisplayElement("map-help-click");
+            undisplayElement("map-help-touch");
+        }
+    }
+
+    function displayElement(id){
+        var elem = document.getElementById(id);
+        elem.classList.remove("notdisplayed");
+        setTimeout(function(){
+            show(elem);
+            
+        }, 1);
+    }
+
+    function undisplayElement(id){
+        var elem = document.getElementById(id);
+        hide(elem, function(){
+            elem.classList.add("notdisplayed");
+            
+        });
+        
+    }
+
+    function changeFloor(newfloor){
+        var currentBuilding = currentRoute.split("/")[0];
+        window.location.hash = "#"+HASH_PREFIX+currentBuilding+"/"+newfloor;
     }
 
     function goTo(route){
@@ -256,7 +318,7 @@ document.addEventListener("DOMContentLoaded", function(){
             {
                 if(!routes[ first ].scene)
                 {
-                    loader.load(routes[ first ].path, function(obj){            
+                    loader.load(ASSETS_URL + routes[ first ].path, function(obj){            
                         routes[ first ].scene = obj;
                         scene.add(obj);
                         if(cb) cb();
@@ -278,7 +340,7 @@ document.addEventListener("DOMContentLoaded", function(){
                         (function(index){
                             if(!routes[ first ].children[ index ].scene)
                             {
-                                loader.load(routes[ first ].children[ index ].path, function(obj){
+                                loader.load(ASSETS_URL + routes[ first ].children[ index ].path, function(obj){
                                     obj.position.y = routes[ first ].children[ index ].offset;
                                     routes[ first ].children[ index ].scene = obj;
                                     scene.add(obj);
@@ -317,15 +379,50 @@ document.addEventListener("DOMContentLoaded", function(){
 
     function routeChanged(route){
         currentRoute = route;
-        var panels = document.querySelectorAll(".panel");
+        document.getElementById("map-routeHeader").innerHTML = genRouteTitle(route);
+        toggleOutBtn(route);
+
+        var panels = document.querySelectorAll("article");
         for(var i =0; i < panels.length; i++)
         {
             panels[i].classList.remove("active");
         }
 
-        var parentPanel = routes[ route.split("/")[0] ].panel;
-        if(parentPanel)
-            document.querySelector("#"+parentPanel).classList.add("active");
+        var activePanel = routes[ route.split("/")[0] ].panel;
+        if(activePanel)
+            document.querySelector("#"+activePanel).classList.add("active");
+
+        var linked = document.querySelectorAll("[data-link-hash]");
+        for(i =0; i < linked.length; i++)
+        {
+            var reg = new RegExp(linked[i].dataset.linkHashEnd);
+            if(reg.test(route))
+            {
+                linked[i].classList.add("active");
+            }
+            else
+            {
+                linked[i].classList.remove("active");
+            }
+        }
+
+    }
+
+    function toggleOutBtn(route){
+        var isRoot = routes[ route.split("/")[0] ].root;
+        if(!isRoot)
+        {
+            show(document.getElementById("map-out"));
+        }
+        else
+        {
+            hide(document.getElementById("map-out"));
+        }
+    }
+
+    function genRouteTitle(route){
+        var parts = route.split("/");
+        return parts[0] + (parts[1] ? (" - " + routes[ parts[0] ].children[ parts[1] ].name) : "");
     }
 
     function clearScene(){
