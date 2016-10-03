@@ -6,15 +6,25 @@ document.addEventListener("DOMContentLoaded", function(){
     var raycaster;
     var mouse;
     var currentRoute;
+    var markerGeometry;
 
     var clickEvents= {};
     var helpOpen = false;
+    var optsOpen = false;
+    var addingMarker = false;
 
     var ASSETS_URL = "assets/";
     var HASH_PREFIX = "/map/";
     var DEFAULT_ROUTE = "main";
     var HIDE_TIME = 200;
+    var MARKER_SCALE = 0.05;
+    var TAG_SCALE = 0.05;
 
+    var assets = {
+        marker: "marker.json"
+    };
+
+    var markers = {};
     var routes = {
         main:
         {
@@ -127,15 +137,28 @@ document.addEventListener("DOMContentLoaded", function(){
 
         document.body.appendChild( renderer.domElement );
 
-        initEvents();
+        loadAssets(function(){
+            initEvents();
 
-        //Force Load Scene
-        onHashChange();
+            //Force Load Scene
+            onHashChange();
+        });
+
         
 
     }
 
+    function loadAssets(cb){
+        var loader = new THREE.JSONLoader();
+        loader.load( ASSETS_URL + assets.marker, function( geometry ) {
+            markerGeometry = geometry;
+        });
+
+        cb();
+    }
+
     function initEvents(){
+        window.addEventListener( 'resize', onWindowResize, false );
         document.querySelector("canvas").addEventListener("mousemove",onMouseMove);
         document.querySelector("canvas").addEventListener("click",onMouseClick);
         window.addEventListener("hashchange",onHashChange);
@@ -147,11 +170,30 @@ document.addEventListener("DOMContentLoaded", function(){
         });
         document.getElementById("map-help-click").addEventListener("click", toggleHelp);
         document.getElementById("map-help-touch").addEventListener("touchend", toggleHelp);
+        document.getElementById("map-opts").addEventListener("click", toggleOpts);
         document.getElementById("map-out").addEventListener("click", function(){
             goTo(routes.main.name);
         });
-        document.getElementById("map-out").addEventListener("touchend", function(){
-            goTo(routes.main.name);
+
+
+        document.getElementById("map-addMarker").addEventListener("click", function(){
+            addingMarker = true;
+            toggleOpts();
+        });
+        document.getElementById("map-markerCancel").addEventListener("click", function(){
+            addingMarker = false;
+            undisplayElement("map-markerMenu");
+        });
+
+        document.getElementById("map-markerCreate").addEventListener("click", function(){
+            addingMarker = false;
+            undisplayElement("map-markerMenu");
+
+            var color = document.getElementById("map-markerColor").value;
+            var tag = document.getElementById("map-markerTag").value;
+            createMarker(color, tag, selected.point, camera.position);
+            saveMarker(currentRoute, color, tag, selected.point, camera.position);
+
         });
 
         clickEvents["A5"] = function(){
@@ -172,6 +214,46 @@ document.addEventListener("DOMContentLoaded", function(){
             })(elems[i]);
         }
 
+    }
+
+    function saveMarker(route, color, tag, position, lookAtPoint){
+        var  building = route.split("/")[0];
+        var  floor = route.split("/")[1];
+        var markers = loadFromStorage("markers");
+        markers[building] = markers[building] || [];
+        markers[building].push({
+            floor: floor,
+            color: color,
+            position: position,
+            tag: tag,
+            lookAtPoint: lookAtPoint
+        });
+
+        saveOnStorage("markers", markers);
+    }
+
+    function loadFromStorage(key){
+        if(localStorage[key])
+            return JSON.parse(localStorage[key]);
+        else
+            return {};
+    }
+
+    function saveOnStorage(key, value){
+        localStorage[key] = JSON.stringify(value);
+    }
+
+    function toggleOpts(){
+        if(optsOpen)
+        {
+            optsOpen = false;
+            undisplayElement("map-opts-list");
+        }
+        else
+        {
+            optsOpen = true;
+            displayElement("map-opts-list");
+        }
     }
 
     function toggleHelp(mode){
@@ -268,6 +350,7 @@ document.addEventListener("DOMContentLoaded", function(){
                 initLights();
                 var route = window.location.hash.slice(window.location.hash.indexOf(HASH_PREFIX) + HASH_PREFIX.length);
                 loadRoute( route, function(){
+                    loadMarkers(route);
                     routeChanged(route);
                     show(renderer.domElement);
                     
@@ -280,6 +363,24 @@ document.addEventListener("DOMContentLoaded", function(){
             }
         });
 
+    }
+
+    function loadMarkers(route){
+        var building = route.split("/")[0];
+        var floor = route.split("/")[1];
+
+        var markers = loadFromStorage("markers");
+        if(markers[building])
+        {
+            markers[building].forEach(function(elem){
+                if(!floor || floor == elem.floor)
+                {
+                    createMarker(elem.color, elem.tag, elem.position, elem.lookAtPoint);
+                }
+
+            });
+            
+        }
     }
 
     function hide(element, cb){
@@ -296,15 +397,72 @@ document.addEventListener("DOMContentLoaded", function(){
         element.classList.remove("hidden");
     }
 
+    function createMarker(color, tag, position, lookAtPoint){
+        //var geometry = new THREE.BoxGeometry( 1, 1, 1 );
+        var mat = new THREE.MeshLambertMaterial( { color: color });
+        var mesh = new THREE.Mesh( markerGeometry, mat );
+        mesh.position.set( 0, 0, 0 );
+        mesh.scale.set(MARKER_SCALE, MARKER_SCALE, MARKER_SCALE);
+        mesh.position.copy( position);
+
+        //TODO: tag
+        var canvas1 = document.createElement('canvas');
+        canvas1.width = "32"*tag.length;
+        canvas1.height = "128";
+        var context1 = canvas1.getContext('2d');
+        context1.font = "100 50px sans-serif";
+        context1.fillStyle = color;
+        context1.fillText(tag, 0, 50);
+        
+        // canvas contents will be used for a texture
+        var texture1 = new THREE.Texture(canvas1) 
+        texture1.needsUpdate = true;
+          
+        var material1 = new THREE.MeshBasicMaterial( {map: texture1, side:THREE.DoubleSide } );
+        material1.transparent = true;
+        material1.depthTest= false;
+
+        var mesh1 = new THREE.Mesh(
+            new THREE.PlaneGeometry(canvas1.width, canvas1.height),
+            material1
+          );
+        mesh1.position.copy(position);
+        mesh1.position.set(mesh1.position.x, mesh1.position.y, mesh1.position.z);
+        mesh1.scale.set(TAG_SCALE,TAG_SCALE,TAG_SCALE);
+        var point = new THREE.Vector3(lookAtPoint.x, lookAtPoint.y, lookAtPoint.z);
+        mesh1.lookAt(point);
+        mesh.add( mesh1 );
+        
+
+
+        scene.add(mesh);
+
+
+
+
+    }
+
     function mousePick(){
         // update the picking ray with the camera and mouse position    
         raycaster.setFromCamera( mouse, camera );   
 
         // calculate objects intersecting the picking ray
         var intersects = raycaster.intersectObjects( scene.children, true);
-        selected = intersects[0] || null;
+        selected = intersects[0] || null;        
+        if(addingMarker)
+        {
+            if ( selected ) {
+                displayElement("map-markerMenu");
+            }
+        }
 
         
+    }
+
+    function onWindowResize() {
+        camera.aspect = window.innerWidth / window.innerHeight;
+        camera.updateProjectionMatrix();
+        renderer.setSize( window.innerWidth, window.innerHeight );
     }
 
     function loadRoute(route, cb){
@@ -395,7 +553,7 @@ document.addEventListener("DOMContentLoaded", function(){
         var linked = document.querySelectorAll("[data-link-hash]");
         for(i =0; i < linked.length; i++)
         {
-            var reg = new RegExp(linked[i].dataset.linkHashEnd);
+            var reg = new RegExp(linked[i].dataset.linkHash);
             if(reg.test(route))
             {
                 linked[i].classList.add("active");
@@ -437,10 +595,7 @@ document.addEventListener("DOMContentLoaded", function(){
 
         requestAnimationFrame( animate );
 
-        mousePick();
-
-        //mesh.rotation.x += 0.01;
-        //mesh.rotation.y += 0.02;
+        //mousePick(); hover needed?
 
         controls.update();
         renderer.render( scene, camera );

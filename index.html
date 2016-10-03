@@ -75,9 +75,8 @@
 			display: none !important;
 		}
 
-		#map-helpbtn, #map-out{
+		#map-helpbtn, #map-out, #map-opts{
 			position: fixed;
-			top: 0;
 			width: 40px;
 			margin: 20px;
 			vertical-align: middle;
@@ -91,13 +90,39 @@
 			cursor: pointer;
 			z-index: 2;
 		}
-
-		#map-helpbtn{
+		#map-helpbtn, #map-out{
+			top: 0;			
+		}
+		#map-helpbtn, #map-opts{
 			right:0;
 		}
+		#map-opts{
+			bottom:0;
+		}
+		#map-opts-list{
+			position: fixed;
+			background-color: gray;
+			height: 0;
+			width: 250px;
+			height: 250px;
+			bottom: 0;
+			right: 0;
+			transition: height 200ms;
+			overflow:hidden;
 
+		}
 
-		.map-help{
+		#map-opts-list ul{
+			list-style:none;
+			padding:0;
+		}
+
+		#map-opts-list.hidden{
+			height:0px;
+			transition:height 200ms;
+		}
+
+		.map-modal{
 			    position: absolute;
 				width: 100%;
 				align-items: center;
@@ -121,7 +146,7 @@
 	</style>
 </head>
 <body>
-	<div id="map-help-touch" class="map-help notdisplayed hidden">
+	<div id="map-help-touch" class="map-help map-modal notdisplayed hidden">
 		<div>
 			<ul>
 				<li>Drag: Rotate</li>
@@ -130,13 +155,25 @@
 			</ul>
 		</div>
 	</div>
-	<div id="map-help-click" class="map-help notdisplayed hidden">
+	<div id="map-help-click" class="map-help map-modal notdisplayed hidden">
 		<div>
 			<ul>
 				<li>Drag click: Rotate</li>
 				<li>Mousewheel: Zoom</li>
 				<li>Right click: Pan</li>
 			</ul>
+		</div>
+	</div>
+	<div id="map-markerMenu" class="map-modal notdisplayed hidden">
+		<div>
+			<label>Tag:</label>
+			<input type="text" id="map-markerTag">
+			<label>#</label>
+			<input type="color" id="map-markerColor">
+			<div>
+				<div id="map-markerCancel">Cancel</div>
+				<div id="map-markerCreate">Create</div>
+			</div>
 		</div>
 	</div>
 	<main id="map-ui">
@@ -153,10 +190,21 @@
 					<li data-change-floor="1" data-link-hash="\w*(\/1)\b">E</li>
 					<li data-change-floor="2" data-link-hash="\w*(\/2)\b">1</li>
 					<li data-change-floor="3" data-link-hash="\w*(\/3)\b">2</li>
-					<li data-change-floor="*" data-link-hash="\w*!(\/)\b">*</li>
+					<li data-change-floor="" data-link-hash="^[a-zA-Z0-9]+(\/)?$">*</li>
 				</ul>
 			</section>
 		</article>
+		<footer>
+			<div id="map-opts">+</div>
+			<div id="map-opts-list" class="notdisplayed hidden">
+				<ul>
+					<li id="map-addMarker">Add marker</li>
+					<li>Reset</li>
+					<li>Save</li>
+					<li>Get link</li>
+				</ul>
+			</div>
+		</footer>
 	</main>
 
 </body>
