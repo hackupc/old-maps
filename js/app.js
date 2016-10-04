@@ -24,7 +24,7 @@ document.addEventListener("DOMContentLoaded", function(){
         marker: "marker.json"
     };
 
-    var markers = {};
+    var map = {};
     var routes = {
         main:
         {
@@ -134,6 +134,8 @@ document.addEventListener("DOMContentLoaded", function(){
         renderer.setClearColor(0xffffff);
         controls = new THREE.OrbitControls(camera, renderer.domElement),
 
+        map = loadFromStorage("map");
+        initParams();
 
         document.body.appendChild( renderer.domElement );
 
@@ -143,9 +145,47 @@ document.addEventListener("DOMContentLoaded", function(){
             //Force Load Scene
             onHashChange();
         });
-
         
 
+    }
+
+    function initParams(){
+        var params = getQueryParams(location.search);
+        if(params.map)
+        {
+            var linkedMap = JSON.parse(params.map);
+            if(linkedMap.camCoords)
+            {
+                camera.position.set(linkedMap.camCoords.x, linkedMap.camCoords.y, linkedMap.camCoords.z);
+                controls.center.set(linkedMap.camCenter.x, linkedMap.camCenter.y, linkedMap.camCenter.z);
+                //TODO
+                //controls.center.set();
+            }
+
+            if(linkedMap.markers)
+            {
+                if(!map.markers)
+                {
+                    map.markers = map.markers || {};
+                    map.markers = linkedMap.markers;
+                }
+                else
+                {
+                    for(var building in linkedMap.markers ){
+                        if ( linkedMap.markers.hasOwnProperty(building) ) {
+                            if(map.markers && map.markers[building])
+                            {
+                                linkedMap.markers[building].forEach(function(elem){
+                                    map.markers[building].push(elem);
+                                });
+                            }
+                        }
+                    }
+                }
+            }
+            
+
+        }
     }
 
     function loadAssets(cb){
@@ -175,11 +215,36 @@ document.addEventListener("DOMContentLoaded", function(){
             goTo(routes.main.name);
         });
 
+        //OPTS
+        document.getElementById("map-share").addEventListener("click", function(){
+            displayElement("map-shareMenu");
+        });
+        document.getElementById("map-copyLink").addEventListener("click", function(){
+            undisplayElement("map-shareMenu");
+            var includeCam = document.getElementById("map-includeCameraPos").checked;
+            var includeMarkers = document.getElementById("map-includeMarkers").checked;
+            var link = genLink(includeCam, includeMarkers);
+            var inp = document.createElement("textarea");
+            inp.innerHTML = link;
+            document.body.appendChild(inp);
+            inp.select();
 
+            try {
+                document.execCommand('copy');
+                inp.blur();
+                inp.parentNode.removeChild(inp);
+            }
+            catch (err) {
+                prompt("Sorry, couldn't access the clipboard. Here's your link", link);
+            }
+        });
+        document.getElementById("map-reset").addEventListener("click", reset);
+        document.getElementById("map-save").addEventListener("click", save);
         document.getElementById("map-addMarker").addEventListener("click", function(){
             addingMarker = true;
             toggleOpts();
         });
+
         document.getElementById("map-markerCancel").addEventListener("click", function(){
             addingMarker = false;
             undisplayElement("map-markerMenu");
@@ -189,7 +254,8 @@ document.addEventListener("DOMContentLoaded", function(){
             addingMarker = false;
             undisplayElement("map-markerMenu");
 
-            var color = document.getElementById("map-markerColor").value;
+            //Remove #. cuz cant be URI encoded
+            var color = document.getElementById("map-markerColor").value.slice(1);
             var tag = document.getElementById("map-markerTag").value;
             createMarker(color, tag, selected.point, camera.position);
             saveMarker(currentRoute, color, tag, selected.point, camera.position);
@@ -216,12 +282,49 @@ document.addEventListener("DOMContentLoaded", function(){
 
     }
 
+    function genLink(cam, mark){
+        var share = {};
+        if(cam)
+        {
+            share.camCoords = {
+                x: camera.position.x,
+                y: camera.position.y,
+                z: camera.position.z
+            };
+
+            share.camCenter = {
+                x: controls.center.x,
+                y: controls.center.y,
+                z: controls.center.z
+            };
+        }
+
+        if(map && map.markers)
+        {
+            share.markers = map.markers;
+        }
+
+        return location.origin + "/?map=" + window.encodeURI( JSON.stringify(share) ) + location.hash;
+
+    }
+
+    function reset(){
+        location.search = "";
+        localStorage["map"] = "";
+        location.reload();
+    }
+
+    function save(){
+        saveOnStorage("map", map);
+    }
+
     function saveMarker(route, color, tag, position, lookAtPoint){
         var  building = route.split("/")[0];
         var  floor = route.split("/")[1];
-        var markers = loadFromStorage("markers");
-        markers[building] = markers[building] || [];
-        markers[building].push({
+
+        map.markers = map.markers || {};
+        map.markers[building] = map.markers[building] || [];
+        map.markers[building].push({
             floor: floor,
             color: color,
             position: position,
@@ -229,7 +332,32 @@ document.addEventListener("DOMContentLoaded", function(){
             lookAtPoint: lookAtPoint
         });
 
-        saveOnStorage("markers", markers);
+        var auxmap = loadFromStorage("map");
+        auxmap.markers = auxmap.markers || {};
+        auxmap.markers[building] = auxmap.markers[building] || [];
+        auxmap.markers[building].push({
+            floor: floor,
+            color: color,
+            position: position,
+            tag: tag,
+            lookAtPoint: lookAtPoint
+        });
+
+        saveOnStorage("map", auxmap);
+    }
+
+    function getQueryParams(qs) {
+        qs = qs.split('+').join(' ');
+
+        var params = {},
+            tokens,
+            re = /[?&]?([^=]+)=([^&]*)/g;
+
+        while (tokens = re.exec(qs)) {
+            params[decodeURIComponent(tokens[1])] = decodeURIComponent(tokens[2]);
+        }
+
+        return params;
     }
 
     function loadFromStorage(key){
@@ -369,10 +497,9 @@ document.addEventListener("DOMContentLoaded", function(){
         var building = route.split("/")[0];
         var floor = route.split("/")[1];
 
-        var markers = loadFromStorage("markers");
-        if(markers[building])
+        if(map.markers && map.markers[building])
         {
-            markers[building].forEach(function(elem){
+            map.markers[building].forEach(function(elem){
                 if(!floor || floor == elem.floor)
                 {
                     createMarker(elem.color, elem.tag, elem.position, elem.lookAtPoint);
@@ -399,7 +526,7 @@ document.addEventListener("DOMContentLoaded", function(){
 
     function createMarker(color, tag, position, lookAtPoint){
         //var geometry = new THREE.BoxGeometry( 1, 1, 1 );
-        var mat = new THREE.MeshLambertMaterial( { color: color });
+        var mat = new THREE.MeshLambertMaterial( { color: '#'+color });
         var mesh = new THREE.Mesh( markerGeometry, mat );
         mesh.position.set( 0, 0, 0 );
         mesh.scale.set(MARKER_SCALE, MARKER_SCALE, MARKER_SCALE);
@@ -411,7 +538,7 @@ document.addEventListener("DOMContentLoaded", function(){
         canvas1.height = "128";
         var context1 = canvas1.getContext('2d');
         context1.font = "100 50px sans-serif";
-        context1.fillStyle = color;
+        context1.fillStyle = '#'+color;
         context1.fillText(tag, 0, 50);
         
         // canvas contents will be used for a texture

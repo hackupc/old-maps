@@ -176,6 +176,17 @@
 			</div>
 		</div>
 	</div>
+	<div id="map-shareMenu" class="map-modal notdisplayed hidden">
+		<div>
+			<label>Include markers:</label>
+			<input type="checkbox" id="map-includeMarkers">
+			<label>Camera position:</label>
+			<input type="checkbox" id="map-includeCameraPos">
+			<div>
+				<div id="map-copyLink">Copy to clipboard!</div>
+			</div>
+		</div>
+	</div>
 	<main id="map-ui">
 		<header>
 			<div id="map-out">&lt;</div>
@@ -199,9 +210,9 @@
 			<div id="map-opts-list" class="notdisplayed hidden">
 				<ul>
 					<li id="map-addMarker">Add marker</li>
-					<li>Reset</li>
-					<li>Save</li>
-					<li>Get link</li>
+					<li id="map-reset">Reset</li>
+					<li id="map-save">Save</li>
+					<li id="map-share">Share</li>
 				</ul>
 			</div>
 		</footer>
