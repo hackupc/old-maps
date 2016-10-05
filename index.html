@@ -7,24 +7,10 @@
 	<link rel="stylesheet" type="text/css" href="css/app.css" />
 </head>
 <body>
-	<div id="map-help-touch" class="map-help map-modal notdisplayed hidden">
-		<div>
-			<ul>
-				<li>Tap A5/A6: See building</li>
-				<li>Drag: Rotate</li>
-				<li>Pinch: Zoom</li>
-				<li>Drag 3 fingers: Pan</li>
-			</ul>
-		</div>
-	</div>
-	<div id="map-help-click" class="map-help map-modal notdisplayed hidden">
-		<div>
-			<ul>
-				<li>Click A5/A6: See building</li>
-				<li>Drag click: Rotate</li>
-				<li>Mousewheel: Zoom</li>
-				<li>Right click: Pan</li>
-			</ul>
+
+	<div id="map-info" class="map-modal notdisplayed hidden">
+		<div id="map-info-body">
+			
 		</div>
 	</div>
 	<div id="map-markerMenu" class="map-modal notdisplayed hidden">
@@ -58,7 +44,7 @@
 			<div id="map-out">&lt;</div>
 			<h1 id="map-routeHeader"></h1>
 			<div id="map-helpbtn">?</div>
-			<div id="map-markerInfo" class="map-info notdisplayed hidden">
+			<div id="map-markerInfo" class="map-infoLine notdisplayed hidden">
 				<h2>Select marker location</h2>
 			</div>
 		</header>
@@ -66,11 +52,11 @@
 		<article id="map-floors">
 			<section class="panel">
 				<ul class="map-buttonList">
-					<li data-change-floor="0" data-link-hash="\w*(\/0)\b">0</li>
-					<li data-change-floor="1" data-link-hash="\w*(\/1)\b">E</li>
-					<li data-change-floor="2" data-link-hash="\w*(\/2)\b">1</li>
-					<li data-change-floor="3" data-link-hash="\w*(\/3)\b">2</li>
 					<li data-change-floor="" data-link-hash="^[a-zA-Z0-9]+(\/)?$">*</li>
+					<li data-change-floor="3" data-link-hash="\w*(\/3)\b">2</li>
+					<li data-change-floor="2" data-link-hash="\w*(\/2)\b">1</li>
+					<li data-change-floor="1" data-link-hash="\w*(\/1)\b">E</li>
+					<li data-change-floor="0" data-link-hash="\w*(\/0)\b">0</li>
 				</ul>
 			</section>
 		</article>

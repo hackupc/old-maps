@@ -8,6 +8,13 @@
 			padding:0;
 			touch-action: none;
 			font-family: sans-serif;
+			-webkit-touch-callout: none; /* iOS Safari */
+			-webkit-user-select: none;   /* Chrome/Safari/Opera */
+			-khtml-user-select: none;    /* Konqueror */
+			-moz-user-select: none;      /* Firefox */
+			-ms-user-select: none;       /* Internet Explorer/Edge */
+			user-select: none;
+            -webkit-tap-highlight-color: transparent;
 		}
 		canvas{
 			z-index:1;
@@ -141,15 +148,21 @@
 			padding: 20px;
 			background-color: antiquewhite;
 			border-radius: 20px;
+			margin:20px;
 		}
-		.map-info{
+		.map-infoLine{
 			text-align: center;
 			color: gray;
 			margin: 0;
 			padding: 0;
 		}
-		.map-info h2{
+		.map-infoLine h2{
 			padding:0;
+		}
+
+		#map-info div ul{
+			list-style: none;
+			padding: 0;
 		}
 
 		.map-buttons{
@@ -166,7 +179,10 @@
 			cursor:pointer;
 		}
 
-		.map-help div ul{
-			list-style: none;
-			padding: 0;
+		.map-cursor-pointer{
+			cursor:pointer;
+		}
+
+		.map-cursor-normal{
+			cursor:normal;
 		}

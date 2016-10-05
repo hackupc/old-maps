@@ -9,9 +9,12 @@ document.addEventListener("DOMContentLoaded", function(){
     var markerGeometry;
 
     var clickEvents= {};
+    var hoverEvents= {};
+    var hoverOutEvents= {};
     var helpOpen = false;
     var optsOpen = false;
     var addingMarker = false;
+    var lastHover = "";
 
     var ASSETS_URL = "assets/";
     var HASH_PREFIX = "/map/";
@@ -125,10 +128,10 @@ document.addEventListener("DOMContentLoaded", function(){
 
 
         //Renderer
-        renderer = new THREE.WebGLRenderer();
+        renderer = new THREE.WebGLRenderer({antialias: true});
         renderer.setSize( window.innerWidth, window.innerHeight );
         renderer.setClearColor(0xffffff);
-        controls = new THREE.OrbitControls(camera, renderer.domElement),
+        controls = new THREE.OrbitControls(camera, renderer.domElement)
 
         map = loadFromStorage("map");
         initParams();
@@ -141,7 +144,16 @@ document.addEventListener("DOMContentLoaded", function(){
             //Force Load Scene
             onHashChange();
         });
-        
+
+
+
+        //TEST
+        var img = new THREE.MeshBasicMaterial({ 
+            map:THREE.ImageUtils.loadTexture('googlemap.png')
+        });
+        img.map.needsUpdate = true; 
+        var plane = new THREE.Mesh(new THREE.PlaneGeometry(100, 100),img);
+        scene.add(plane);
 
     }
 
@@ -199,13 +211,23 @@ document.addEventListener("DOMContentLoaded", function(){
         document.querySelector("canvas").addEventListener("click",onMouseClick);
         window.addEventListener("hashchange",onHashChange);
         document.getElementById("map-helpbtn").addEventListener("click", function(){
-            toggleHelp("click");
+            var htmlString = "<ul><li>Click green building: +info</li>"+
+                "<li>Drag click: Rotate</li>"+
+                "<li>Mouse wheel: Zoom</li>"+
+                "<li>Right click: Pan</li></ul>";
+
+            showInfo(htmlString);
         });
-        document.getElementById("map-helpbtn").addEventListener("touchend", function(){
-            toggleHelp("touch");
+        document.getElementById("map-helpbtn").addEventListener("touchstart", function(e){
+            e.preventDefault();
+            var htmlString = "<ul><li>Tap green building: +info</li>"+
+                "<li>Drag: Rotate</li>"+
+                "<li>Pinch: Zoom</li>"+
+                "<li>Drag 3 fingers: Pan</li></ul>";
+                
+            showInfo(htmlString);
         });
-        document.getElementById("map-help-click").addEventListener("click", toggleHelp);
-        document.getElementById("map-help-touch").addEventListener("touchend", toggleHelp);
+        document.getElementById("map-info").addEventListener("click", hideInfo);
         document.getElementById("map-opts").addEventListener("click", toggleOpts);
         document.getElementById("map-out").addEventListener("click", function(){
             goTo(routes.UPC.name);
@@ -260,12 +282,49 @@ document.addEventListener("DOMContentLoaded", function(){
         });
 
         clickEvents["A5"] = function(){
-            goTo(routes.A5.name);
+            goTo(routes.A5.name+'/0');
         };
 
         clickEvents["A6"] = function(){
-            goTo(routes.A6.name);
+            goTo(routes.A6.name+'/0');
         };
+
+        clickEvents["MealZone"] = function(){
+            showInfo("The food will be served here");
+        };
+
+        clickEvents["Vertex"] = function(){
+            showInfo("This building will hold the open and end ceremonies");
+        };
+
+        clickEvents["Showers"] = function(){
+            showInfo("You can take a shower inside the sports center");
+        };
+
+        clickEvents["Checkin"] = function(){
+            showInfo("Cross the door to get your wristband and swag. Welcome to HackUPC!");
+        };
+
+        clickEvents["GameRoom"] = function(){
+            showInfo("You just lost the game");
+        };
+
+        clickEvents["ToA51"] = function(){
+            goTo(routes.A5.name+'/2');
+        };
+        clickEvents["ToA52"] = function(){
+            goTo(routes.A5.name+'/3');
+        };
+
+        clickEvents["ToA61"] = function(){
+            goTo(routes.A6.name+'/2');
+        };
+
+        clickEvents["ToA62"] = function(){
+            goTo(routes.A6.name+'/3');
+        };
+
+        initHoverOnClickable();
 
         var elems = document.querySelectorAll("[data-change-floor]");
         for(var i = 0; i < elems.length; i++)
@@ -277,6 +336,31 @@ document.addEventListener("DOMContentLoaded", function(){
             })(elems[i]);
         }
 
+    }
+
+    function cursor(type){
+        document.querySelector("canvas").classList.remove("map-cursor-pointer");
+        document.querySelector("canvas").classList.remove("map-cursor-normal");
+        document.querySelector("canvas").classList.add("map-cursor-"+type);
+    }
+
+    function cursorPointer(){
+        cursor("pointer");
+    }
+
+    function cursorNormal(){
+        cursor("normal");   
+    }
+
+    function initHoverOnClickable(){
+        for(var elem in clickEvents)
+        {
+            if(clickEvents.hasOwnProperty(elem))
+            {
+                hoverEvents[elem]= cursorPointer;
+                hoverOutEvents[elem]= cursorNormal;
+            }
+        }
     }
 
     function genLink(cam, mark){
@@ -381,6 +465,15 @@ document.addEventListener("DOMContentLoaded", function(){
         }
     }
 
+    function showInfo(htmlString){
+        document.getElementById("map-info-body").innerHTML = htmlString;
+        displayElement("map-info");
+    }
+
+    function hideInfo(){
+        undisplayElement("map-info");   
+    }
+
     function toggleHelp(mode){
         if(mode == "click")
             displayElement("map-help-click");
@@ -452,12 +545,66 @@ document.addEventListener("DOMContentLoaded", function(){
         // calculate mouse position in normalized device coordinates
         // (-1 to +1) for both components
         mouse.x = ( event.clientX / window.innerWidth ) * 2 - 1;
-        mouse.y = - ( event.clientY / window.innerHeight ) * 2 + 1;     
+        mouse.y = - ( event.clientY / window.innerHeight ) * 2 + 1;
+        mouseHover();
 
     }
 
+    function mouseHover(){
+        // update the picking ray with the camera and mouse position    
+        raycaster.setFromCamera( mouse, camera );   
+
+        // calculate objects intersecting the picking ray
+        var intersects = raycaster.intersectObjects( scene.children, true);
+        selected = intersects[0] || null; 
+
+        if(selected)
+        {
+            if(lastHover != selected.object.name)
+            {
+                if(hoverOutEvents[lastHover])
+                {
+                    hoverOutEvents[lastHover]();   
+                }
+
+                if(hoverEvents[selected.object.name])
+                {
+                    hoverEvents[selected.object.name]();
+                    lastHover = selected.object.name;
+                }
+                else
+                {
+                    lastHover = "";
+                }
+                
+            }
+        }
+        else
+        {
+            if(hoverOutEvents[lastHover])
+            {
+                hoverOutEvents[lastHover]();   
+                lastHover = "";
+            }
+        }
+    }
+
+
     function onMouseClick(){
-        mousePick();
+        // update the picking ray with the camera and mouse position    
+        raycaster.setFromCamera( mouse, camera );   
+
+        // calculate objects intersecting the picking ray
+        var intersects = raycaster.intersectObjects( scene.children, true);
+        selected = intersects[0] || null;        
+        if(addingMarker)
+        {
+            if ( selected ) {
+                undisplayElement("map-markerInfo");
+                displayElement("map-markerMenu");
+            }
+        }
+
         if(selected)
         {
             if(clickEvents[selected.object.name])
@@ -568,23 +715,6 @@ document.addEventListener("DOMContentLoaded", function(){
 
     }
 
-    function mousePick(){
-        // update the picking ray with the camera and mouse position    
-        raycaster.setFromCamera( mouse, camera );   
-
-        // calculate objects intersecting the picking ray
-        var intersects = raycaster.intersectObjects( scene.children, true);
-        selected = intersects[0] || null;        
-        if(addingMarker)
-        {
-            if ( selected ) {
-                undisplayElement("map-markerInfo");
-                displayElement("map-markerMenu");
-            }
-        }
-
-        
-    }
 
     function onWindowResize() {
         camera.aspect = window.innerWidth / window.innerHeight;
@@ -721,8 +851,6 @@ document.addEventListener("DOMContentLoaded", function(){
     function animate() {
 
         requestAnimationFrame( animate );
-
-        //mousePick(); hover needed?
 
         controls.update();
         renderer.render( scene, camera );
