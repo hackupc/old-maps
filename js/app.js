@@ -468,6 +468,7 @@ document.addEventListener("DOMContentLoaded", function(){
     }
 
     function onHashChange(){
+        displayElement("map-loading");
         hide(renderer.domElement, function(){
             if(window.location.hash && window.location.hash.indexOf(HASH_PREFIX) != -1)
             {
@@ -475,6 +476,7 @@ document.addEventListener("DOMContentLoaded", function(){
                 initLights();
                 var route = window.location.hash.slice(window.location.hash.indexOf(HASH_PREFIX) + HASH_PREFIX.length);
                 loadRoute( route, function(){
+                    undisplayElement("map-loading");
                     loadMarkers(route);
                     routeChanged(route);
                     show(renderer.domElement);
