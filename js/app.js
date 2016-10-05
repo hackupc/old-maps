@@ -15,7 +15,9 @@ document.addEventListener("DOMContentLoaded", function(){
     var optsOpen = false;
     var addingMarker = false;
     var lastHover = "";
+    var mouseDownTimestamp;
 
+    var CLICK_MAX_TIME = 200;
     var ASSETS_URL = "assets/";
     var HASH_PREFIX = "/map/";
     var DEFAULT_ROUTE = "UPC";
@@ -147,13 +149,7 @@ document.addEventListener("DOMContentLoaded", function(){
 
 
 
-        //TEST
-        var img = new THREE.MeshBasicMaterial({ 
-            map:THREE.ImageUtils.loadTexture('googlemap.png')
-        });
-        img.map.needsUpdate = true; 
-        var plane = new THREE.Mesh(new THREE.PlaneGeometry(100, 100),img);
-        scene.add(plane);
+        
 
     }
 
@@ -207,6 +203,11 @@ document.addEventListener("DOMContentLoaded", function(){
 
     function initEvents(){
         window.addEventListener( 'resize', onWindowResize, false );
+        //Missclick prevention
+        document.querySelector("canvas").addEventListener("mousedown",function(){
+            mouseDownTimestamp = Date.now();
+            console.log(mouseDownTimestamp);
+        });
         document.querySelector("canvas").addEventListener("mousemove",onMouseMove);
         document.querySelector("canvas").addEventListener("click",onMouseClick);
         window.addEventListener("hashchange",onHashChange);
@@ -322,6 +323,10 @@ document.addEventListener("DOMContentLoaded", function(){
 
         clickEvents["ToA62"] = function(){
             goTo(routes.A6.name+'/3');
+        };
+
+        clickEvents["googlemap"] = function(){
+            location.href="https://goo.gl/maps/izqD1uYR3J32";
         };
 
         initHoverOnClickable();
@@ -533,12 +538,27 @@ document.addEventListener("DOMContentLoaded", function(){
         dirLight.shadow.camera.bottom = -d;
         dirLight.shadow.camera.far = 3500;
         dirLight.shadow.bias = -0.0001;
-        
 
         scene.add( hemiLight );
         scene.add( dirLight );
     }
 
+    function initMain(){
+        var img = new THREE.MeshBasicMaterial({ 
+            map:THREE.ImageUtils.loadTexture('googlemap.png')
+        });
+        img.map.needsUpdate = true; 
+        var scale = 0.013;
+        var plane = new THREE.Mesh(new THREE.PlaneGeometry(1265*scale, 845*scale),img);
+        plane.rotation.set(degToRad(-90), 0, degToRad(135));
+        plane.position.set(0.7,-0.3,-0.3);
+        plane.name = "googlemap";
+
+        scene.add(plane);
+    }
+    function degToRad(degrees) {
+        return degrees * Math.PI / 180;
+    }
 
     function onMouseMove( event ) {
 
@@ -590,7 +610,9 @@ document.addEventListener("DOMContentLoaded", function(){
     }
 
 
-    function onMouseClick(){
+    function onMouseClick(e){
+
+        if(mouseDownTimestamp && (Date.now() - mouseDownTimestamp) > CLICK_MAX_TIME) return;
         // update the picking ray with the camera and mouse position    
         raycaster.setFromCamera( mouse, camera );   
 
@@ -622,6 +644,10 @@ document.addEventListener("DOMContentLoaded", function(){
                 clearScene();
                 initLights();
                 var route = window.location.hash.slice(window.location.hash.indexOf(HASH_PREFIX) + HASH_PREFIX.length);
+                if(route == routes.UPC.name)
+                {
+                    initMain();
+                }
                 loadRoute( route, function(){
                     undisplayElement("map-loading");
                     loadMarkers(route);
