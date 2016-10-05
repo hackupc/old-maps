@@ -1,0 +1,172 @@
+		*{
+			transition: opacity 200ms;
+		}
+		html, body{
+			width:100%;
+			height:100%;
+			margin:0;
+			padding:0;
+			touch-action: none;
+			font-family: sans-serif;
+		}
+		canvas{
+			z-index:1;
+		}
+
+
+		#map-ui{
+			width:100%;
+			position:absolute;
+			top:0;
+			left:0;
+			z-index:2;
+		}
+
+		#map-ui article{
+			display:none;
+		}
+
+		#map-ui article.active{
+			display:flex;
+		}
+
+		#map-floors .panel{
+			position: fixed;
+			top: 35%;
+		}
+
+		#map-floors .map-buttonList{
+			list-style: none;
+			margin: 0;
+			padding: 0;
+			padding-left: 15px;
+		}
+
+		#map-floors .map-buttonList li{
+			padding: 5px 8px;
+			margin: 5px;
+			border: thin solid #ddd;
+			background-color: #eee;
+			color: #bbb;
+			cursor:pointer;
+		}
+
+		#map-floors .map-buttonList li.active{
+			color:black;
+		}
+
+		#map-routeHeader{
+			text-align: center;
+		}
+
+		.hidden{
+			opacity:0;
+			transition: opacity 200ms;
+		}
+
+		.notdisplayed{
+			display: none !important;
+		}
+
+		#map-helpbtn, #map-out, #map-opts{
+			position: fixed;
+			width: 40px;
+			margin: 20px;
+			vertical-align: middle;
+			text-align: center;
+			padding: 5px;
+			font-size: 30px;
+			font-weight: bold;
+			background-color: #f0f0f0;
+			color: gray;
+			border-radius: 25px;
+			cursor: pointer;
+			z-index: 2;
+		}
+		#map-helpbtn, #map-out{
+			top: 0;			
+		}
+		#map-helpbtn, #map-opts{
+			right:0;
+		}
+		#map-opts{
+			bottom:0;
+		}
+		#map-opts-list{
+			position: fixed;
+			background-color: #f0f0f0;
+			width: 150px;
+			height: 190px;
+			bottom: 0;
+			right: 0;
+			transition: height 200ms;
+			overflow: hidden;
+			margin: 15px;
+			border-radius: 20px;
+
+		}
+
+		#map-opts-list ul{
+			list-style:none;
+			padding:0;
+			padding-left:15px;
+		}
+		#map-opts-list ul li{
+			margin: 5px 0;
+			border-bottom: thin solid #e0e0e0;
+			padding: 5px;
+			cursor:pointer;
+		}
+
+		#map-opts-list.hidden{
+			height:0px;
+			transition:height 200ms;
+		}
+
+
+
+		.map-modal{
+			    position: absolute;
+				width: 100%;
+				align-items: center;
+				justify-content: center;
+				height: 100%;
+				display: flex;
+				background-color: rgba(215, 202, 190, 0.5);
+				z-index:3;
+
+		}
+
+		.map-modal > div{
+			padding: 20px;
+			background-color: antiquewhite;
+			border-radius: 20px;
+		}
+		.map-info{
+			text-align: center;
+			color: gray;
+			margin: 0;
+			padding: 0;
+		}
+		.map-info h2{
+			padding:0;
+		}
+
+		.map-buttons{
+			display:flex;
+		}
+
+		.map-buttons div{
+			flex: 1 1 auto;
+			text-align: center;
+			margin: 15px;
+			margin-bottom: 0px;
+			border: 3px solid #f6dcad;
+			padding: 3px;
+			cursor:pointer;
+		}
+
+		.map-help div ul{
+			list-style: none;
+			padding: 0;
+		}

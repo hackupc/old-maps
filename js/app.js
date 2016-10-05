@@ -15,7 +15,7 @@ document.addEventListener("DOMContentLoaded", function(){
 
     var ASSETS_URL = "assets/";
     var HASH_PREFIX = "/map/";
-    var DEFAULT_ROUTE = "main";
+    var DEFAULT_ROUTE = "UPC";
     var HIDE_TIME = 200;
     var MARKER_SCALE = 0.05;
     var TAG_SCALE = 0.05;
@@ -26,10 +26,10 @@ document.addEventListener("DOMContentLoaded", function(){
 
     var map = {};
     var routes = {
-        main:
+        UPC:
         {
             path: "main.json",
-            name: "main",
+            name: "UPC",
             root: true,
             scene: null
         },
@@ -38,36 +38,32 @@ document.addEventListener("DOMContentLoaded", function(){
             name: "A5",
             panel: "map-floors",
             children:
-            {
-                "0":
+            [
                 {
-                    name:"A50",
+                    name:"0",
                     path: "A50.json",
                     offset: 0,
                     scene:null
                 },
-                "E":
                 {
-                    name:"A5E",
-                    path: "A50.json",
-                    offset: 50,
+                    name:"E",
+                    path: "A5E.json",
+                    offset: 1,
                     scene:null
                 },
-                "1":
                 {
-                    name:"A51",
+                    name:"1",
                     path: "A51.json",
-                    offset: 150,
+                    offset: 2,
                     scene:null
                 },
-                "2":
                 {
-                    name:"A52",
+                    name:"2",
                     path: "A52.json",
-                    offset: 200,
+                    offset: 3,
                     scene:null
                 }
-            }
+            ]
         },
         A6:
         {
@@ -121,9 +117,9 @@ document.addEventListener("DOMContentLoaded", function(){
         scene = new THREE.Scene();
 
         camera = new THREE.PerspectiveCamera( 75, window.innerWidth / window.innerHeight, 0.001, 10000 );
-        camera.position.z = 3;
-        camera.position.y = 3;
-        camera.position.x = 6;
+        camera.position.z = -4;
+        camera.position.y = 4;
+        camera.position.x = 0;
 
 
 
@@ -212,7 +208,7 @@ document.addEventListener("DOMContentLoaded", function(){
         document.getElementById("map-help-touch").addEventListener("touchend", toggleHelp);
         document.getElementById("map-opts").addEventListener("click", toggleOpts);
         document.getElementById("map-out").addEventListener("click", function(){
-            goTo(routes.main.name);
+            goTo(routes.UPC.name);
         });
 
         //OPTS
@@ -243,6 +239,7 @@ document.addEventListener("DOMContentLoaded", function(){
         document.getElementById("map-addMarker").addEventListener("click", function(){
             addingMarker = true;
             toggleOpts();
+            displayElement("map-markerInfo");
         });
 
         document.getElementById("map-markerCancel").addEventListener("click", function(){
@@ -579,6 +576,7 @@ document.addEventListener("DOMContentLoaded", function(){
         if(addingMarker)
         {
             if ( selected ) {
+                undisplayElement("map-markerInfo");
                 displayElement("map-markerMenu");
             }
         }
