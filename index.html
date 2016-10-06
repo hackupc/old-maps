@@ -2,6 +2,7 @@
 <head>
 	<meta charset="utf-8">
  	<title>Maps @ HackUPC</title>
+ 	<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
  	<meta property="og:title" content="Maps @ HackUPC"/>
  	<meta property="og:site_name" content="Maps @ HackUPC"/>
  	<meta name="description" content="HackUPC ">
@@ -47,13 +48,14 @@
 	</div>
 	<main id="map-ui">
 		<header>
+			<a id="liveLink" href="http://hackupc.com/live">Live</a>
 			<div id="map-out">&lt;</div>
 			<h1 id="map-routeHeader"></h1>
 			<div id="map-helpbtn">?</div>
-			<div id="map-markerInfo" class="map-infoLine notdisplayed hidden">
-				<h2>Select marker location</h2>
-			</div>
 		</header>
+		<div id="map-markerInfo" class="map-infoLine notdisplayed hidden">
+			<h2>Select marker location</h2>
+		</div>
 		<!--Articles represent views. Only one view active at a time-->
 		<article id="map-floors">
 			<section class="panel">

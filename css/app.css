@@ -14,7 +14,7 @@
 			-moz-user-select: none;      /* Firefox */
 			-ms-user-select: none;       /* Internet Explorer/Edge */
 			user-select: none;
-            -webkit-tap-highlight-color: transparent;
+			-webkit-tap-highlight-color: transparent;
 		}
 		canvas{
 			z-index:1;
@@ -36,6 +36,10 @@
 		#map-ui article.active{
 			display:flex;
 		}
+		#map-ui header{
+			background-color: #CF5230;
+			color: #E3C598;
+		}
 
 		#map-floors .panel{
 			position: fixed;
@@ -52,18 +56,22 @@
 		#map-floors .map-buttonList li{
 			padding: 5px 8px;
 			margin: 5px;
-			border: thin solid #ddd;
-			background-color: #eee;
-			color: #bbb;
+			border: thin solid #F59A44;;
 			cursor:pointer;
+			background-color: #E3C598;
+			color: #CF5230;
+			opacity: 0.5;
 		}
 
 		#map-floors .map-buttonList li.active{
 			color:black;
+			opacity: 1;
 		}
 
 		#map-routeHeader{
 			text-align: center;
+			margin:0;
+			padding: 5px;
 		}
 
 		.hidden{
@@ -84,14 +92,15 @@
 			padding: 5px;
 			font-size: 30px;
 			font-weight: bold;
-			background-color: #f0f0f0;
-			color: gray;
+
 			border-radius: 25px;
 			cursor: pointer;
 			z-index: 2;
+			background-color: #E3C598;
+			color: #CF5230;
 		}
 		#map-helpbtn, #map-out{
-			top: 0;			
+			top: 40px;
 		}
 		#map-helpbtn, #map-opts{
 			right:0;
@@ -101,7 +110,7 @@
 		}
 		#map-opts-list{
 			position: fixed;
-			background-color: #f0f0f0;
+			background-color: #E3C598;
 			width: 150px;
 			height: 190px;
 			bottom: 0;
@@ -110,6 +119,7 @@
 			overflow: hidden;
 			margin: 15px;
 			border-radius: 20px;
+			color: #CF5230;
 
 		}
 
@@ -120,7 +130,7 @@
 		}
 		#map-opts-list ul li{
 			margin: 5px 0;
-			border-bottom: thin solid #e0e0e0;
+			border-bottom: thin solid rgba(255, 55, 0, 0.27);
 			padding: 5px;
 			cursor:pointer;
 		}
@@ -133,14 +143,14 @@
 
 
 		.map-modal{
-			    position: absolute;
-				width: 100%;
-				align-items: center;
-				justify-content: center;
-				height: 100%;
-				display: flex;
-				background-color: rgba(215, 202, 190, 0.5);
-				z-index:3;
+			position: absolute;
+			width: 100%;
+			align-items: center;
+			justify-content: center;
+			height: 100%;
+			display: flex;
+			background-color: rgba(215, 202, 190, 0.5);
+			z-index:3;
 
 		}
 
@@ -185,4 +195,16 @@
 
 		.map-cursor-normal{
 			cursor:normal;
+		}
+
+		#liveLink{
+			display: block;
+			position: fixed;
+			border: 2px solid #F59A44;
+			top: 7px;
+			left: 10px;
+			padding: 5px 10px;
+			text-decoration: none;
+			color: #CF5230;
+			background-color:#F59A44
 		}
