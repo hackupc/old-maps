@@ -14,7 +14,7 @@
 			-moz-user-select: none;      /* Firefox */
 			-ms-user-select: none;       /* Internet Explorer/Edge */
 			user-select: none;
-            -webkit-tap-highlight-color: transparent;
+			-webkit-tap-highlight-color: transparent;
 		}
 		canvas{
 			z-index:1;
@@ -38,7 +38,7 @@
 		}
 		#map-ui header{
 			background-color: #CF5230;
-		    color: #E3C598;
+			color: #E3C598;
 		}
 
 		#map-floors .panel{
@@ -57,12 +57,10 @@
 			padding: 5px 8px;
 			margin: 5px;
 			border: thin solid #F59A44;;
-			background-color: #eee;
-			color: #bbb;
 			cursor:pointer;
 			background-color: #E3C598;
-		    color: #CF5230;
-		    opacity: 0.5;
+			color: #CF5230;
+			opacity: 0.5;
 		}
 
 		#map-floors .map-buttonList li.active{
@@ -94,13 +92,12 @@
 			padding: 5px;
 			font-size: 30px;
 			font-weight: bold;
-			/*background-color: #f0f0f0;*/
-			/*color: gray;*/
+
 			border-radius: 25px;
 			cursor: pointer;
 			z-index: 2;
 			background-color: #E3C598;
-		    color: #CF5230;
+			color: #CF5230;
 		}
 		#map-helpbtn, #map-out{
 			top: 40px;
@@ -146,7 +143,7 @@
 
 
 		.map-modal{
-		    position: absolute;
+			position: absolute;
 			width: 100%;
 			align-items: center;
 			justify-content: center;
@@ -208,5 +205,6 @@
 			left: 10px;
 			padding: 5px 10px;
 			text-decoration: none;
-			color: #E3C598;
+			color: #CF5230;
+			background-color:#F59A44
 		}
