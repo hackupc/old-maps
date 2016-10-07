@@ -39,12 +39,12 @@
 		#map-ui header{
 			background-color: #CF5230;
 			color: #E3C598;
-			height:47px;
 		}
 
 		#map-floors .panel{
 			position: fixed;
-			top: 35%;
+			top: 50%;
+			transform: translateY(-50%);
 		}
 
 		#map-floors .map-buttonList{
@@ -54,22 +54,27 @@
 			padding-left: 15px;
 		}
 
-		#map-floors .map-buttonList li{
+		.map-buttonList li {
+			box-sizing: border-box;
 			padding: 5px 8px;
 			margin: 5px;
-			border: thin solid #F59A44;;
-			cursor:pointer;
-			background-color: #E3C598;
-			color: #CF5230;
-			opacity: 0.5;
+
+			background: white;
+			color: #F59A44;
+			border: 2px solid #F59A44;
+			border-radius: 5px;
+
+			text-align: center;
+			cursor: pointer;
 		}
 
-		#map-floors .map-buttonList li.active{
-			color:black;
-			opacity: 1;
+		.map-buttonList li.active, .map-buttonList li:hover {
+			background: #F59A44;
+			color: white;
 		}
 
 		#map-routeHeader{
+			color: white;
 			text-align: center;
 			margin:0;
 			padding: 5px;
@@ -87,18 +92,20 @@
 		#map-helpbtn, #map-out, #map-opts{
 			position: fixed;
 			width: 40px;
+	    height: 40px;
+			border-radius: 25px;
 			margin: 20px;
-			vertical-align: middle;
-			text-align: center;
 			padding: 5px;
+
 			font-size: 30px;
 			font-weight: bold;
+			text-align: center;
+			vertical-align: middle;
 
-			border-radius: 25px;
 			cursor: pointer;
 			z-index: 2;
-			background-color: #E3C598;
-			color: #CF5230;
+			background-color: #F59A44;
+	    color: white;
 		}
 		#map-helpbtn, #map-out{
 			top: 40px;
@@ -106,39 +113,59 @@
 		#map-helpbtn, #map-opts{
 			right:0;
 		}
+		#map-out { text-align: center }
+		#map-helpbtn { line-height: 40px }
 		#map-opts{
 			bottom:0;
+			transition: transform .3s ease-out;
 		}
-		#map-opts-list{
+		#map-opts-list {
 			position: fixed;
-			background-color: #E3C598;
+			bottom: 5px;
+	    right: 5px;
 			width: 150px;
-			height: 190px;
-			bottom: 0;
-			right: 0;
-			transition: height 200ms;
+			height: 210px;
+
 			overflow: hidden;
 			margin: 15px;
-			border-radius: 20px;
-			color: #CF5230;
+			margin-top: 5px;
 
+			color: white;
+			background-color: #F59A44;
+	    border: 1px solid #F59A44;
+			border-radius: 25px;
+			transition: all .3s ease-out;
 		}
-
+		#map-opts-list:not(.hidden) + #map-opts {
+			transform: rotate(45deg);
+		}
+		#map-opts-list.hidden {
+			width: 40px;
+			height: 40px;
+			opacity: 1;
+		}
+		#map-opts-list.notdisplayed {
+			display: block !important;
+			pointer-events: none;
+		}
 		#map-opts-list ul{
 			list-style:none;
 			padding:0;
-			padding-left:15px;
-		}
-		#map-opts-list ul li{
-			margin: 5px 0;
-			border-bottom: thin solid rgba(255, 55, 0, 0.27);
-			padding: 5px;
-			cursor:pointer;
-		}
+			margin: 0;
 
-		#map-opts-list.hidden{
-			height:0px;
-			transition:height 200ms;
+		}
+		#map-opts-list ul li {
+			white-space: nowrap;
+			padding: 10px 5px;
+			padding-left: 18px;
+
+			border-bottom: thin solid white;
+			cursor: pointer;
+		}
+		#map-opts-list ul li:last-child { border-bottom: none }
+		#map-opts-list ul li:hover {
+			background-color: white;
+			color: #F59A44;
 		}
 
 
@@ -199,17 +226,22 @@
 		}
 
 		#liveLink{
-			display: flex;
-			justify-content: center;
-			align-items: center;
+			display: block;
+			padding: 0 14px;
+			padding-top: 1px;
 
 			position: fixed;
-			width: 70px;
-			height: 43px;
-			
-			border: 2px solid #F59A44;
-			background-color: #F59A44;
-			color: #CF5230;
-			font-size: 20px;
+			top: 6px;
+			left: 6px;
+
+			color: #FFF5ED;
+			background-color:#F59A44;
+
+			line-height: 33px;
 			text-decoration: none;
+			border: 0;
+			border-radius: 5px;
+		}
+		#liveLink:hover {
+			color: white;
 		}
