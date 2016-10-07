@@ -2,11 +2,13 @@ document.addEventListener("DOMContentLoaded", function(){
 
     var scene, camera, renderer, controls;
     var geometry, material, mesh;
+    var clock = new THREE.Clock();
 
     var raycaster;
     var mouse;
     var currentRoute;
-    var markerGeometry;
+    var loadedGeometries = {};
+    var animated = {};
 
     var presets = {
         showers: "?map=%7B%22camCoords%22:%7B%22x%22:1.46,%22y%22:0.24,%22z%22:-1.5%7D,%22camCenter%22:%7B%22x%22:0.28,%22y%22:-2.5,%22z%22:3.75%7D%7D#/UPC",
@@ -38,9 +40,17 @@ document.addEventListener("DOMContentLoaded", function(){
     var MARKER_SCALE = 0.05;
     var TAG_SCALE = 0.05;
 
-    var assets = {
-        marker: "marker.json"
-    };
+
+    var assets = [
+        {
+            name: "marker",
+            path: "marker.json"
+        },
+        {
+            name: "bee",
+            path: "bee.json"
+        }
+    ];
 
     var map = {};
     var routes = {
@@ -199,8 +209,13 @@ document.addEventListener("DOMContentLoaded", function(){
 
     function loadAssets(cb){
         var loader = new THREE.JSONLoader();
-        loader.load( ASSETS_URL + assets.marker, function( geometry ) {
-            markerGeometry = geometry;
+        assets.forEach(function(asset){
+            loader.load( ASSETS_URL + asset.path, function( geometry, materials) {
+                loadedGeometries[asset.name] = {
+                    geometry: geometry,
+                    materials:materials
+                };
+            });
         });
 
         cb();
@@ -569,6 +584,17 @@ document.addEventListener("DOMContentLoaded", function(){
         plane.name = "googlemap";
 
         scene.add(plane);
+
+        var material = new THREE.MultiMaterial( loadedGeometries["bee"].materials );
+        var object = new THREE.Mesh( loadedGeometries["bee"].geometry, material );
+        scene.add( object );
+        object.rotation.set(degToRad(-90),0,0);
+        //object.position.set(3,0.5,1.15);
+        object.position.set(3,1,1.15);
+        object.scale.set(0.01,0.01,0.01);
+        animated.bee = object;
+
+
     }
     function degToRad(degrees) {
         return degrees * Math.PI / 180;
@@ -722,7 +748,7 @@ document.addEventListener("DOMContentLoaded", function(){
     function createMarker(color, tag, position, lookAtPoint){
         //var geometry = new THREE.BoxGeometry( 1, 1, 1 );
         var mat = new THREE.MeshLambertMaterial( { color: '#'+color });
-        var mesh = new THREE.Mesh( markerGeometry, mat );
+        var mesh = new THREE.Mesh( loadedGeometries["marker"].geometry, mat );
         mesh.position.set( 0, 0, 0 );
         mesh.scale.set(MARKER_SCALE, MARKER_SCALE, MARKER_SCALE);
         mesh.position.copy( position);
@@ -897,9 +923,19 @@ document.addEventListener("DOMContentLoaded", function(){
 
     }
 
+    function runAnimations(deltaTime){
+        if(animated.bee)
+        {
+            animated.bee.rotation.z += deltaTime;
+            animated.bee.position.y = Math.cos(clock.getElapsedTime()*2) * deltaTime + 0.5;
+            
+        }
+    }
+
     function animate() {
 
         requestAnimationFrame( animate );
+        runAnimations(clock.getDelta());
 
         controls.update();
         renderer.render( scene, camera );
