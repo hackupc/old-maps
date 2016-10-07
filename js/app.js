@@ -2,11 +2,26 @@ document.addEventListener("DOMContentLoaded", function(){
 
     var scene, camera, renderer, controls;
     var geometry, material, mesh;
+    var clock = new THREE.Clock();
 
     var raycaster;
     var mouse;
     var currentRoute;
-    var markerGeometry;
+    var loadedGeometries = {};
+    var animated = {};
+
+    var presets = {
+        showers: "?map=%7B%22camCoords%22:%7B%22x%22:1.46,%22y%22:0.24,%22z%22:-1.5%7D,%22camCenter%22:%7B%22x%22:0.28,%22y%22:-2.5,%22z%22:3.75%7D%7D#/UPC",
+        checkin: "?map=%7B%22camCoords%22:%7B%22x%22:-0.26,%22y%22:0.49,%22z%22:-0.01%7D,%22camCenter%22:%7B%22x%22:1.47,%22y%22:-2.45,%22z%22:3.29%7D%7D#/UPC",
+        vertex: "?map=%7B%22camCoords%22:%7B%22x%22:-2.21,%22y%22:1.74,%22z%22:0.97%7D,%22camCenter%22:%7B%22x%22:-2.21,%22y%22:-2.34,%22z%22:4.38%7D%7D#/UPC",
+        talks: "?map=%7B%22camCoords%22:%7B%22x%22:0.02,%22y%22:4.13,%22z%22:-1.87%7D,%22camCenter%22:%7B%22x%22:0,%22y%22:0,%22z%22:0%7D%7D#/A5/0",
+        game: "?map=%7B%22camCoords%22:%7B%22x%22:1.04,%22y%22:4.71,%22z%22:-0.16%7D,%22camCenter%22:%7B%22x%22:1.04,%22y%22:0.74,%22z%22:1.63%7D%7D#/A5/2",
+        meal: "?map=%7B%22camCoords%22:%7B%22x%22:-0.07,%22y%22:0.52,%22z%22:0.3%7D,%22camCenter%22:%7B%22x%22:0.28,%22y%22:-2.45,%22z%22:3.78%7D%7D#/UPC",
+        chill: "?map=%7B%22camCoords%22:%7B%22x%22:0,%22y%22:4.08,%22z%22:-1.68%7D,%22camCenter%22:%7B%22x%22:0,%22y%22:0,%22z%22:0%7D%7D#/A6/0",
+        coffee: "?map=%7B%22camCoords%22:%7B%22x%22:-0.04,%22y%22:1.12,%22z%22:-1.2%7D,%22camCenter%22:%7B%22x%22:-0.03,%22y%22:-0.33,%22z%22:-0.39%7D%7D#/A6/0",
+        biene: "?map=%7B%22camCoords%22:%7B%22x%22:3.45,%22y%22:0.61,%22z%22:1.05%7D,%22camCenter%22:%7B%22x%22:-0.1,%22y%22:-1.01,%22z%22:3.11%7D%7D#/UPC",
+        demos: "?map=%7B%22camCoords%22:%7B%22x%22:0.02,%22y%22:5.66,%22z%22:-1.95%7D,%22camCenter%22:%7B%22x%22:0,%22y%22:0,%22z%22:0%7D%7D#/A5/2"
+    };
 
     var clickEvents= {};
     var hoverEvents= {};
@@ -19,15 +34,23 @@ document.addEventListener("DOMContentLoaded", function(){
 
     var CLICK_MAX_TIME = 200;
     var ASSETS_URL = "assets/";
-    var HASH_PREFIX = "/map/";
+    var HASH_PREFIX = "/";
     var DEFAULT_ROUTE = "UPC";
     var HIDE_TIME = 200;
     var MARKER_SCALE = 0.05;
     var TAG_SCALE = 0.05;
 
-    var assets = {
-        marker: "marker.json"
-    };
+
+    var assets = [
+        {
+            name: "marker",
+            path: "marker.json"
+        },
+        {
+            name: "bee",
+            path: "bee.json"
+        }
+    ];
 
     var map = {};
     var routes = {
@@ -118,16 +141,12 @@ document.addEventListener("DOMContentLoaded", function(){
         raycaster = new THREE.Raycaster();
         mouse = new THREE.Vector2();
 
-
         scene = new THREE.Scene();
 
         camera = new THREE.PerspectiveCamera( 75, window.innerWidth / window.innerHeight, 0.001, 10000 );
         camera.position.z = -4;
         camera.position.y = 4;
         camera.position.x = 0;
-
-
-
 
         //Renderer
         renderer = new THREE.WebGLRenderer({antialias: true});
@@ -146,10 +165,6 @@ document.addEventListener("DOMContentLoaded", function(){
             //Force Load Scene
             onHashChange();
         });
-
-
-
-        
 
     }
 
@@ -194,8 +209,13 @@ document.addEventListener("DOMContentLoaded", function(){
 
     function loadAssets(cb){
         var loader = new THREE.JSONLoader();
-        loader.load( ASSETS_URL + assets.marker, function( geometry ) {
-            markerGeometry = geometry;
+        assets.forEach(function(asset){
+            loader.load( ASSETS_URL + asset.path, function( geometry, materials) {
+                loadedGeometries[asset.name] = {
+                    geometry: geometry,
+                    materials:materials
+                };
+            });
         });
 
         cb();
@@ -206,7 +226,6 @@ document.addEventListener("DOMContentLoaded", function(){
         //Missclick prevention
         document.querySelector("canvas").addEventListener("mousedown",function(){
             mouseDownTimestamp = Date.now();
-            console.log(mouseDownTimestamp);
         });
         document.querySelector("canvas").addEventListener("mousemove",onMouseMove);
         document.querySelector("canvas").addEventListener("click",onMouseClick);
@@ -368,24 +387,31 @@ document.addEventListener("DOMContentLoaded", function(){
         }
     }
 
+    function toFixedNumber(x, decimals){
+        var aux = Math.pow(10, decimals);
+        return parseInt(aux*x)/aux;
+
+    }
+
+
     function genLink(cam, mark){
         var share = {};
         if(cam)
         {
             share.camCoords = {
-                x: camera.position.x,
-                y: camera.position.y,
-                z: camera.position.z
+                x: toFixedNumber(camera.position.x,2),
+                y: toFixedNumber(camera.position.y,2),
+                z: toFixedNumber(camera.position.z,2)
             };
 
             share.camCenter = {
-                x: controls.center.x,
-                y: controls.center.y,
-                z: controls.center.z
+                x: toFixedNumber(controls.center.x,2),
+                y: toFixedNumber(controls.center.y,2),
+                z: toFixedNumber(controls.center.z,2)
             };
         }
 
-        if(map && map.markers)
+        if(mark && map && map.markers)
         {
             share.markers = map.markers;
         }
@@ -407,27 +433,30 @@ document.addEventListener("DOMContentLoaded", function(){
     function saveMarker(route, color, tag, position, lookAtPoint){
         var  building = route.split("/")[0];
         var  floor = route.split("/")[1];
+        var obj = {
+            floor: floor,
+            color: color,
+            position: {
+                x: toFixedNumber(position.x,2),
+                y: toFixedNumber(position.y,2),
+                z: toFixedNumber(position.z,2)
+            },
+            tag: tag,
+            lookAtPoint:{
+                x: toFixedNumber(lookAtPoint.x,2),
+                y: toFixedNumber(lookAtPoint.y,2),
+                z: toFixedNumber(lookAtPoint.z,2)
+            },
+        };
 
         map.markers = map.markers || {};
         map.markers[building] = map.markers[building] || [];
-        map.markers[building].push({
-            floor: floor,
-            color: color,
-            position: position,
-            tag: tag,
-            lookAtPoint: lookAtPoint
-        });
+        map.markers[building].push(obj);
 
         var auxmap = loadFromStorage("map");
         auxmap.markers = auxmap.markers || {};
         auxmap.markers[building] = auxmap.markers[building] || [];
-        auxmap.markers[building].push({
-            floor: floor,
-            color: color,
-            position: position,
-            tag: tag,
-            lookAtPoint: lookAtPoint
-        });
+        auxmap.markers[building].push(obj);
 
         saveOnStorage("map", auxmap);
     }
@@ -555,6 +584,17 @@ document.addEventListener("DOMContentLoaded", function(){
         plane.name = "googlemap";
 
         scene.add(plane);
+
+        var material = new THREE.MultiMaterial( loadedGeometries["bee"].materials );
+        var object = new THREE.Mesh( loadedGeometries["bee"].geometry, material );
+        scene.add( object );
+        object.rotation.set(degToRad(-90),0,0);
+        //object.position.set(3,0.5,1.15);
+        object.position.set(3,1,1.15);
+        object.scale.set(0.01,0.01,0.01);
+        animated.bee = object;
+
+
     }
     function degToRad(degrees) {
         return degrees * Math.PI / 180;
@@ -641,20 +681,29 @@ document.addEventListener("DOMContentLoaded", function(){
         hide(renderer.domElement, function(){
             if(window.location.hash && window.location.hash.indexOf(HASH_PREFIX) != -1)
             {
+                var route = window.location.hash.slice(window.location.hash.indexOf(HASH_PREFIX) + HASH_PREFIX.length);
                 clearScene();
                 initLights();
-                var route = window.location.hash.slice(window.location.hash.indexOf(HASH_PREFIX) + HASH_PREFIX.length);
-                if(route == routes.UPC.name)
+                console.log(route);
+                if(presets[route])
                 {
-                    initMain();
+                    location.href = location.origin + presets[route];
                 }
-                loadRoute( route, function(){
-                    undisplayElement("map-loading");
-                    loadMarkers(route);
-                    routeChanged(route);
-                    show(renderer.domElement);
+                else
+                {
+                    if(route == routes.UPC.name)
+                    {
+                        initMain();
+                    }
+                    loadRoute( route, function(){
+                        undisplayElement("map-loading");
+                        loadMarkers(route);
+                        routeChanged(route);
+                        show(renderer.domElement);
+                        
+                    }); 
                     
-                }); 
+                }
 
             }
             else
@@ -699,7 +748,7 @@ document.addEventListener("DOMContentLoaded", function(){
     function createMarker(color, tag, position, lookAtPoint){
         //var geometry = new THREE.BoxGeometry( 1, 1, 1 );
         var mat = new THREE.MeshLambertMaterial( { color: '#'+color });
-        var mesh = new THREE.Mesh( markerGeometry, mat );
+        var mesh = new THREE.Mesh( loadedGeometries["marker"].geometry, mat );
         mesh.position.set( 0, 0, 0 );
         mesh.scale.set(MARKER_SCALE, MARKER_SCALE, MARKER_SCALE);
         mesh.position.copy( position);
@@ -814,7 +863,7 @@ document.addEventListener("DOMContentLoaded", function(){
         {
             //404
             console.warn("Route not found");
-            loadRoute("cube");
+            goTo(DEFAULT_ROUTE);
         }
     }
 
@@ -874,9 +923,19 @@ document.addEventListener("DOMContentLoaded", function(){
 
     }
 
+    function runAnimations(deltaTime){
+        if(animated.bee)
+        {
+            animated.bee.rotation.z += deltaTime;
+            animated.bee.position.y = Math.cos(clock.getElapsedTime()*2) * deltaTime + 0.5;
+            
+        }
+    }
+
     function animate() {
 
         requestAnimationFrame( animate );
+        runAnimations(clock.getDelta());
 
         controls.update();
         renderer.render( scene, camera );

@@ -39,6 +39,7 @@
 		#map-ui header{
 			background-color: #CF5230;
 			color: #E3C598;
+			height:47px;
 		}
 
 		#map-floors .panel{
@@ -198,13 +199,17 @@
 		}
 
 		#liveLink{
-			display: block;
+			display: flex;
+			justify-content: center;
+			align-items: center;
+
 			position: fixed;
+			width: 70px;
+			height: 43px;
+			
 			border: 2px solid #F59A44;
-			top: 7px;
-			left: 10px;
-			padding: 5px 10px;
-			text-decoration: none;
+			background-color: #F59A44;
 			color: #CF5230;
-			background-color:#F59A44
+			font-size: 20px;
+			text-decoration: none;
 		}
