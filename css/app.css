@@ -1,247 +1,241 @@
-		*{
-			transition: opacity 200ms;
-		}
-		html, body{
-			width:100%;
-			height:100%;
-			margin:0;
-			padding:0;
-			touch-action: none;
-			font-family: sans-serif;
-			-webkit-touch-callout: none; /* iOS Safari */
-			-webkit-user-select: none;   /* Chrome/Safari/Opera */
-			-khtml-user-select: none;    /* Konqueror */
-			-moz-user-select: none;      /* Firefox */
-			-ms-user-select: none;       /* Internet Explorer/Edge */
-			user-select: none;
-			-webkit-tap-highlight-color: transparent;
-		}
-		canvas{
-			z-index:1;
-		}
+*{
+	transition: opacity 200ms;
+}
+html, body{
+	width:100%;
+	height:100%;
+	margin:0;
+	padding:0;
+	touch-action: none;
+	font-family: sans-serif;
+	-webkit-touch-callout: none; /* iOS Safari */
+	-webkit-user-select: none;   /* Chrome/Safari/Opera */
+	-khtml-user-select: none;    /* Konqueror */
+	-moz-user-select: none;      /* Firefox */
+	-ms-user-select: none;       /* Internet Explorer/Edge */
+	user-select: none;
+	-webkit-tap-highlight-color: transparent;
+}
+canvas{
+	z-index:1;
+}
 
 
-		#map-ui{
-			width:100%;
-			position:absolute;
-			top:0;
-			left:0;
-			z-index:2;
-		}
+#map-ui{
+	width:100%;
+	position:absolute;
+	top:0;
+	left:0;
+	z-index:2;
+}
 
-		#map-ui article{
-			display:none;
-		}
+#map-ui article{
+	display:none;
+}
 
-		#map-ui article.active{
-			display:flex;
-		}
-		#map-ui header{
-			background-color: #CF5230;
-			color: #E3C598;
-		}
+#map-ui article.active{
+	display:flex;
+}
+#map-ui header{
+	background-color: #03A9B5;
+}
 
-		#map-floors .panel{
-			position: fixed;
-			top: 50%;
-			transform: translateY(-50%);
-		}
+#map-floors .panel{
+	position: fixed;
+	top: 50%;
+	transform: translateY(-50%);
+}
 
-		#map-floors .map-buttonList{
-			list-style: none;
-			margin: 0;
-			padding: 0;
-			padding-left: 15px;
-		}
+#map-floors .map-buttonList{
+	list-style: none;
+	margin: 0;
+	padding: 0;
+	padding-left: 15px;
+}
 
-		.map-buttonList li {
-			box-sizing: border-box;
-			padding: 5px 8px;
-			margin: 5px;
+.map-buttonList li {
+	box-sizing: border-box;
+	padding: 5px 8px;
+	margin: 5px;
 
-			background: white;
-			color: #F59A44;
-			border: 2px solid #F59A44;
-			border-radius: 5px;
+	background: white;
+	color: #03A9B5;
+	border: 2px solid #03A9B5;
+	border-radius: 5px;
 
-			text-align: center;
-			cursor: pointer;
-		}
+	text-align: center;
+	cursor: pointer;
+}
 
-		.map-buttonList li.active, .map-buttonList li:hover {
-			background: #F59A44;
-			color: white;
-		}
+.map-buttonList li.active, .map-buttonList li:hover {
+	background: #03A9B5;
+	color: white;
+}
 
-		#map-routeHeader{
-			color: white;
-			text-align: center;
-			margin:0;
-			padding: 5px;
-		}
+#map-routeHeader{
+	color: white;
+	text-align: center;
+	margin:0;
+	padding: 5px;
+}
 
-		.hidden{
-			opacity:0;
-			transition: opacity 200ms;
-		}
+.hidden{
+	opacity:0;
+	transition: opacity 200ms;
+}
 
-		.notdisplayed{
-			display: none !important;
-		}
+.notdisplayed{
+	display: none !important;
+}
 
-		#map-helpbtn, #map-out, #map-opts{
-			position: fixed;
-			width: 40px;
-	    height: 40px;
-			border-radius: 25px;
-			margin: 20px;
-			padding: 5px;
+#map-helpbtn, #map-out, #map-opts{
+	position: fixed;
+	width: 40px;
+height: 40px;
+	border-radius: 25px;
+	margin: 20px;
+	padding: 5px;
 
-			font-size: 30px;
-			font-weight: bold;
-			text-align: center;
-			vertical-align: middle;
+	font-size: 30px;
+	font-weight: bold;
+	text-align: center;
+	vertical-align: middle;
 
-			cursor: pointer;
-			z-index: 2;
-			background-color: #F59A44;
-	    color: white;
-		}
-		#map-helpbtn, #map-out{
-			top: 40px;
-		}
-		#map-helpbtn, #map-opts{
-			right:0;
-		}
-		#map-out { text-align: center }
-		#map-helpbtn { line-height: 40px }
-		#map-opts{
-			bottom:0;
-			transition: transform .3s ease-out;
-		}
-		#map-opts-list {
-			position: fixed;
-			bottom: 5px;
-	    right: 5px;
-			width: 150px;
-			height: 210px;
+	cursor: pointer;
+	z-index: 2;
+	background-color: #03A9B5;
+color: white;
+}
+#map-helpbtn, #map-out{
+	top: 40px;
+}
+#map-helpbtn, #map-opts{
+	right:0;
+}
+#map-out { text-align: center }
+#map-helpbtn { line-height: 40px }
+#map-opts{
+	bottom:0;
+	transition: transform .3s ease-out;
+}
+#map-opts-list {
+	position: fixed;
+	bottom: 5px;
+right: 5px;
+	width: 150px;
+	height: 210px;
 
-			overflow: hidden;
-			margin: 15px;
-			margin-top: 5px;
+	overflow: hidden;
+	margin: 15px;
+	margin-top: 5px;
 
-			color: white;
-			background-color: #F59A44;
-	    border: 1px solid #F59A44;
-			border-radius: 25px;
-			transition: all .3s ease-out;
-		}
-		#map-opts-list:not(.hidden) + #map-opts {
-			transform: rotate(45deg);
-		}
-		#map-opts-list.hidden {
-			width: 40px;
-			height: 40px;
-			opacity: 1;
-		}
-		#map-opts-list.notdisplayed {
-			display: block !important;
-			pointer-events: none;
-		}
-		#map-opts-list ul{
-			list-style:none;
-			padding:0;
-			margin: 0;
+	color: white;
+	background-color: #03A9B5;
+border: 1px solid #013f43;
+	border-radius: 25px;
+	transition: all .3s ease-out;
+}
+#map-opts-list:not(.hidden) + #map-opts {
+	transform: rotate(45deg);
+}
+#map-opts-list.hidden {
+	width: 40px;
+	height: 40px;
+	opacity: 1;
+}
+#map-opts-list.notdisplayed {
+	display: block !important;
+	pointer-events: none;
+}
+#map-opts-list ul{
+	list-style:none;
+	padding:0;
+	margin: 0;
 
-		}
-		#map-opts-list ul li {
-			white-space: nowrap;
-			padding: 10px 5px;
-			padding-left: 18px;
+}
+#map-opts-list ul li {
+	white-space: nowrap;
+	padding: 10px 5px;
+	padding-left: 18px;
 
-			border-bottom: thin solid white;
-			cursor: pointer;
-		}
-		#map-opts-list ul li:last-child { border-bottom: none }
-		#map-opts-list ul li:hover {
-			background-color: white;
-			color: #F59A44;
-		}
-
+	border-bottom: thin solid white;
+	cursor: pointer;
+}
+#map-opts-list ul li:last-child { border-bottom: none }
+#map-opts-list ul li:hover {
+	background-color: white;
+	color: #03A9B5;
+}
 
 
-		.map-modal{
-			position: absolute;
-			width: 100%;
-			align-items: center;
-			justify-content: center;
-			height: 100%;
-			display: flex;
-			background-color: rgba(215, 202, 190, 0.5);
-			z-index:3;
 
-		}
+.map-modal{
+	position: absolute;
+	width: 100%;
+	align-items: center;
+	justify-content: center;
+	height: 100%;
+	display: flex;
+	background-color: rgba(190, 211, 215, 0.7);
+	z-index:3;
 
-		.map-modal > div{
-			padding: 20px;
-			background-color: antiquewhite;
-			border-radius: 20px;
-			margin:20px;
-		}
-		.map-infoLine{
-			text-align: center;
-			color: gray;
-			margin: 0;
-			padding: 0;
-		}
-		.map-infoLine h2{
-			padding:0;
-		}
+}
 
-		#map-info div ul{
-			list-style: none;
-			padding: 0;
-		}
+.map-modal > div{
+	padding: 20px;
+	background-color: #03A9B5;
+	color: rgba(255,255,255,0.9);
+	margin: 20px;
+	box-shadow: 0 5px 20px 3px rgba(0, 0, 0, 0.2);
+}
+.map-infoLine{
+	text-align: center;
+	color: gray;
+	margin: 0;
+	padding: 0;
+}
+.map-infoLine h2{
+	padding:0;
+}
 
-		.map-buttons{
-			display:flex;
-		}
+#map-info div ul{
+	list-style: none;
+	padding: 0;
+}
 
-		.map-buttons div{
-			flex: 1 1 auto;
-			text-align: center;
-			margin: 15px;
-			margin-bottom: 0px;
-			border: 3px solid #f6dcad;
-			padding: 3px;
-			cursor:pointer;
-		}
+.map-buttons{
+	display:flex;
+}
 
-		.map-cursor-pointer{
-			cursor:pointer;
-		}
+.map-buttons div{
+	flex: 1 1 auto;
+	text-align: center;
+	margin: 15px;
+	margin-bottom: 0px;
+	background-color: #039ea9;
+	padding: 3px;
+	cursor:pointer;
+}
 
-		.map-cursor-normal{
-			cursor:normal;
-		}
+.map-cursor-pointer{
+	cursor:pointer;
+}
 
-		#liveLink{
-			display: block;
-			padding: 0 14px;
-			padding-top: 1px;
+.map-cursor-normal{
+	cursor:normal;
+}
 
-			position: fixed;
-			top: 6px;
-			left: 6px;
-
-			color: #FFF5ED;
-			background-color:#F59A44;
-
-			line-height: 33px;
-			text-decoration: none;
-			border: 0;
-			border-radius: 5px;
-		}
-		#liveLink:hover {
-			color: white;
-		}
+#liveLink{
+	display: block;
+	padding: 0 20px;
+	padding-top: 1px;
+	position: fixed;
+	color: #FFF5ED;
+	background-color: rgb(6, 208, 223);
+	line-height: 45px;
+	text-decoration: none;
+	border: 0;
+}
+#liveLink:hover {
+	color: white;
+}

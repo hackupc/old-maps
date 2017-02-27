@@ -61,6 +61,38 @@ document.addEventListener("DOMContentLoaded", function(){
             root: true,
             scene: null
         },
+        A4:
+        {
+            name: "A4",
+            panel: "map-floors",
+            children:
+            [
+                {
+                    name:"0",
+                    path: "A40.json",
+                    offset: 0,
+                    scene:null
+                },
+                {
+                    name:"E",
+                    path: "A4E.json",
+                    offset: 1,
+                    scene:null
+                },
+                {
+                    name:"1",
+                    path: "A41.json",
+                    offset: 2,
+                    scene:null
+                },
+                {
+                    name:"2",
+                    path: "A42.json",
+                    offset: 3,
+                    scene:null
+                }
+            ]
+        },
         A5:
         {
             name: "A5",
@@ -143,7 +175,7 @@ document.addEventListener("DOMContentLoaded", function(){
 
         scene = new THREE.Scene();
 
-        camera = new THREE.PerspectiveCamera( 75, window.innerWidth / window.innerHeight, 0.001, 10000 );
+        camera = new THREE.PerspectiveCamera( 75, window.innerWidth / window.innerHeight, 0.001, 100 );
         camera.position.z = -4;
         camera.position.y = 4;
         camera.position.x = 0;
@@ -301,6 +333,10 @@ document.addEventListener("DOMContentLoaded", function(){
 
         });
 
+        clickEvents["A4"] = function(){
+            goTo(routes.A4.name+'/0');
+        };
+
         clickEvents["A5"] = function(){
             goTo(routes.A5.name+'/0');
         };
@@ -331,6 +367,12 @@ document.addEventListener("DOMContentLoaded", function(){
 
         clickEvents["ToA51"] = function(){
             goTo(routes.A5.name+'/2');
+        };
+        clickEvents["ToA41"] = function(){
+            goTo(routes.A4.name+'/2');
+        };
+        clickEvents["ToA42"] = function(){
+            goTo(routes.A4.name+'/3');
         };
         clickEvents["ToA52"] = function(){
             goTo(routes.A5.name+'/3');
