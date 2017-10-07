@@ -348,11 +348,17 @@ document.addEventListener("DOMContentLoaded", function(){
         clickEvents["MealZone"] = function(){
             showInfo("The food will be served here");
         };
-
+/*
         clickEvents["Vertex"] = function(){
             showInfo("This building will hold the open and end ceremonies");
         };
-
+*/
+        clickEvents["SportsCenter"] = function(){
+            showInfo("This building will hold the open and end ceremonies. Use the spiral ramp to enter.");
+        };
+        clickEvents["Ramp"] = function(){
+            showInfo("Use this ramp to get to the stage.");
+        };
         clickEvents["Showers"] = function(){
             showInfo("You can take a shower inside the sports center");
         };
@@ -852,6 +858,7 @@ document.addEventListener("DOMContentLoaded", function(){
                 {
                     loader.load(ASSETS_URL + routes[ first ].path, function(obj){            
                         routes[ first ].scene = obj;
+                        debugger;
                         scene.add(obj);
                         if(cb) cb();
                     });
