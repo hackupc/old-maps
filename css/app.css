@@ -37,7 +37,7 @@ canvas{
 	display:flex;
 }
 #map-ui header{
-	background-color: #03A9B5;
+	background-color: #E91753; /*#03A9B5;*/
 }
 
 #map-floors .panel{
@@ -59,8 +59,8 @@ canvas{
 	margin: 5px;
 
 	background: white;
-	color: #03A9B5;
-	border: 2px solid #03A9B5;
+	color: #E91753;
+	border: 2px solid #E91753;
 	border-radius: 5px;
 
 	text-align: center;
@@ -68,7 +68,7 @@ canvas{
 }
 
 .map-buttonList li.active, .map-buttonList li:hover {
-	background: #03A9B5;
+	background: #E91753;
 	color: white;
 }
 
@@ -103,7 +103,7 @@ height: 40px;
 
 	cursor: pointer;
 	z-index: 2;
-	background-color: #03A9B5;
+	background-color: #E91753;
 color: white;
 }
 #map-helpbtn, #map-out{
@@ -130,7 +130,7 @@ right: 5px;
 	margin-top: 5px;
 
 	color: white;
-	background-color: #03A9B5;
+	background-color: #E91753;
 border: 1px solid #013f43;
 	border-radius: 25px;
 	transition: all .3s ease-out;
@@ -164,7 +164,7 @@ border: 1px solid #013f43;
 #map-opts-list ul li:last-child { border-bottom: none }
 #map-opts-list ul li:hover {
 	background-color: white;
-	color: #03A9B5;
+	color: #E91753;
 }
 
 
@@ -183,7 +183,7 @@ border: 1px solid #013f43;
 
 .map-modal > div{
 	padding: 20px;
-	background-color: #03A9B5;
+	background-color: #E91753;
 	color: rgba(255,255,255,0.9);
 	margin: 20px;
 	box-shadow: 0 5px 20px 3px rgba(0, 0, 0, 0.2);
@@ -231,8 +231,8 @@ border: 1px solid #013f43;
 	padding-top: 1px;
 	position: fixed;
 	color: #FFF5ED;
-	background-color: rgb(6, 208, 223);
-	line-height: 45px;
+	background-color: #494949;
+	line-height: 46px;
 	text-decoration: none;
 	border: 0;
 }
