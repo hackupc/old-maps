@@ -239,3 +239,7 @@ border: 1px solid #013f43;
 #liveLink:hover {
 	color: white;
 }
+
+#map-loading img{
+	width: 25vh;
+}
