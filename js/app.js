@@ -358,10 +358,10 @@ document.addEventListener("DOMContentLoaded", function(){
         };
 */
         clickEvents["SportsCenter"] = function(){
-            showInfo("This building will hold the open and end ceremonies. Use the spiral ramp to enter.");
+            showInfo("This building will hold the open and closing ceremonies. Use the spiral ramp to access it.");
         };
         clickEvents["Ramp"] = function(){
-            showInfo("Use this ramp to get to the stage.");
+            showInfo("Use this ramp to get to the ceremonies.");
         };
         clickEvents["Showers"] = function(){
             showInfo("You can take a shower inside the sports center");
