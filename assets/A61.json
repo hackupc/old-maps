@@ -1,6 +1,6 @@
 {
     "object":{
-        "uuid":"BC0AC18A-E5B4-4778-B554-73E344D3289A",
+        "uuid":"CFA10E90-EB49-4C1C-AF0C-7F4B9540B67B",
         "matrix":[1,0,0,0,0,1,0,0,0,0,1,0,0,0,0,1],
         "type":"Scene",
         "children":[{
@@ -169,7 +169,7 @@
             "matrix":[0,0,-0.357752,0,-0.53873,0,-0,0,0,0.357752,0,0,3.02989,0.07479,-1.55665,1],
             "visible":true,
             "type":"Mesh",
-            "material":"798B1063-8BDC-3FA1-A1FB-CEA819DA68E3",
+            "material":"C9EECBB0-14F1-360A-A4FC-8EA7E2FBF661",
             "castShadow":true,
             "receiveShadow":true,
             "geometry":"5FAE56F2-EC5A-35E3-AE43-2EC275F884C9"
@@ -209,7 +209,7 @@
             "matrix":[0.299444,0,0,0,0,0,-0.393628,0,0,0.393628,0,0,2.75781,0.072399,-0.742864,1],
             "visible":true,
             "type":"Mesh",
-            "material":"A2867A50-7E0F-3C3F-AA50-D8316C2DB4CE",
+            "material":"798B1063-8BDC-3FA1-A1FB-CEA819DA68E3",
             "castShadow":true,
             "receiveShadow":true,
             "geometry":"8F2880B7-2D01-315C-AC26-A86764AA556E"
@@ -441,6 +441,17 @@
         "type":"MeshLambertMaterial",
         "name":"imaginlogo"
     },{
+        "map":"C9EECBB0-14F1-360A-A4FC-8EA7E2FBF661",
+        "depthTest":true,
+        "color":13421772,
+        "blending":"NormalBlending",
+        "depthWrite":true,
+        "uuid":"C9EECBB0-14F1-360A-A4FC-8EA7E2FBF661",
+        "emissive":0,
+        "vertexColors":0,
+        "type":"MeshLambertMaterial",
+        "name":"itequia"
+    },{
         "depthTest":true,
         "color":13421772,
         "blending":"NormalBlending",
@@ -470,17 +481,6 @@
         "vertexColors":0,
         "type":"MeshLambertMaterial",
         "name":"RestroomWoman"
-    },{
-        "map":"A2867A50-7E0F-3C3F-AA50-D8316C2DB4CE",
-        "depthTest":true,
-        "color":13421772,
-        "blending":"NormalBlending",
-        "depthWrite":true,
-        "uuid":"A2867A50-7E0F-3C3F-AA50-D8316C2DB4CE",
-        "emissive":0,
-        "vertexColors":0,
-        "type":"MeshLambertMaterial",
-        "name":"skyscanner"
     },{
         "depthTest":true,
         "color":7631988,
@@ -1154,24 +1154,25 @@
     },{
         "magFilter":1006,
         "minFilter":1008,
-        "uuid":"A2867A50-7E0F-3C3F-AA50-D8316C2DB4CE",
-        "name":"skyscanner",
-        "image":"6B9DB0F5-A701-3497-8B1E-0B4753C19C3F",
+        "repeat":[1,1],
+        "uuid":"C9EECBB0-14F1-360A-A4FC-8EA7E2FBF661",
         "anisotropy":1,
+        "image":"4547DA15-2877-34D0-A56D-CBA1817E737F",
+        "wrap":[1000,1000],
         "mapping":300,
-        "wrap":[1001,1001]
+        "name":"itequia"
     }],
     "images":[{
         "uuid":"271605CE-7444-38D8-AA1F-13EBBEEF428F",
-        "url":"GFT.png",
+        "url":"gft2.png",
         "name":"GFT.png"
     },{
         "uuid":"7C2F3292-5E2B-311E-A3A8-9B3D893C5EB5",
         "url":"imaginbank_logo.jpg",
         "name":"imaginbank_logo.jpg"
     },{
-        "uuid":"6B9DB0F5-A701-3497-8B1E-0B4753C19C3F",
-        "url":"SKYSCANNER.png",
-        "name":"SKYSCANNER.png"
+        "uuid":"4547DA15-2877-34D0-A56D-CBA1817E737F",
+        "url":"itequia.png",
+        "name":"itequia.png"
     }]
 }
