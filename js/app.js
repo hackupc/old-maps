@@ -869,7 +869,6 @@ document.addEventListener("DOMContentLoaded", function(){
                 {
                     loader.load(ASSETS_URL + routes[ first ].path, function(obj){            
                         routes[ first ].scene = obj;
-                        debugger;
                         scene.add(obj);
                         if(cb) cb();
                     });
