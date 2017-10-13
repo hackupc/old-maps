@@ -12,6 +12,7 @@ document.addEventListener("DOMContentLoaded", function(){
 
     var presets = {
         showers: "?map=%7B%22camCoords%22:%7B%22x%22:1.46,%22y%22:0.24,%22z%22:-1.5%7D,%22camCenter%22:%7B%22x%22:0.28,%22y%22:-2.5,%22z%22:3.75%7D%7D#/UPC",
+        sports: "?map=%7B%22camCoords%22:%7B%22x%22:1.37,%22y%22:0.81,%22z%22:-1.44%7D,%22camCenter%22:%7B%22x%22:1.37,%22y%22:-0.31,%22z%22:-0.31%7D%7D#/UPC",
         checkin: "?map=%7B%22camCoords%22:%7B%22x%22:-0.26,%22y%22:0.49,%22z%22:-0.01%7D,%22camCenter%22:%7B%22x%22:1.47,%22y%22:-2.45,%22z%22:3.29%7D%7D#/UPC",
         vertex: "?map=%7B%22camCoords%22:%7B%22x%22:-2.21,%22y%22:1.74,%22z%22:0.97%7D,%22camCenter%22:%7B%22x%22:-2.21,%22y%22:-2.34,%22z%22:4.38%7D%7D#/UPC",
         talks: "?map=%7B%22camCoords%22:%7B%22x%22:0.02,%22y%22:4.13,%22z%22:-1.87%7D,%22camCenter%22:%7B%22x%22:0,%22y%22:0,%22z%22:0%7D%7D#/A5/0",
